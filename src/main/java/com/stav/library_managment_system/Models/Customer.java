@@ -1,4 +1,5 @@
-package Models;
+package com.stav.library_managment_system.Models;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

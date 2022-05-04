@@ -1,22 +1,24 @@
-package Controller;
+package com.stav.library_managment_system.Controller;
 
-import DataAccessObject.CustomerDAO;
-import Models.Customer;
+
+import com.stav.library_managment_system.DataAccessObject.CustomerDAO;
+import com.stav.library_managment_system.Models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Controller
 @RequestMapping("/api/customer")
-@RestController
 public class CustomerController {
 
     @Autowired
     private CustomerDAO customerDAO;
 
     @GetMapping("/all")
-    public List<Customer> getEmployees() {
+    public List<Customer> getCustomers() {
         return customerDAO.getAll();
+
     }
 
     @GetMapping("/{customerId}")

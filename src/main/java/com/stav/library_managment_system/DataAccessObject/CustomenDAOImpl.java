@@ -1,6 +1,6 @@
-package DataAccessObject;
+package com.stav.library_managment_system.DataAccessObject;
 
-import Models.Customer;
+import com.stav.library_managment_system.Models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +17,7 @@ public class CustomenDAOImpl implements CustomerDAO {
 
     @Override
     public int save(Customer customer) {
-        return jdbcTemplate.update("INSERT INTO customers (first_name, last_name, email, password) VALUES (null, ?, ?, ?, ?)", new Object[] {customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword()});
+        return jdbcTemplate.update("INSERT INTO customers (firsName, lastName, email, password) VALUES (null, ?, ?, ?, ?)", new Object[] {customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword()});
 
     }
 
@@ -29,7 +29,7 @@ public class CustomenDAOImpl implements CustomerDAO {
 
     @Override
     public int delete(int id) {
-        return jdbcTemplate.update("DELETE FROM customers WHERE id=?", id);
+        return jdbcTemplate.update("DELETE FROM customers WHERE customer_id=?", id);
     }
 
     @Override
@@ -40,6 +40,6 @@ public class CustomenDAOImpl implements CustomerDAO {
     @Override
     public Customer getById(int id) {
 
-        return jdbcTemplate.queryForObject("SELECT * FROM customers WHERE id=?", new BeanPropertyRowMapper<Customer>(Customer.class), id);
+        return jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id=?", new BeanPropertyRowMapper<Customer>(Customer.class), id);
     }
 }
