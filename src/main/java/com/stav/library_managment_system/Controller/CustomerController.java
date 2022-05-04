@@ -1,45 +1,33 @@
 package com.stav.library_managment_system.Controller;
 
-
 import com.stav.library_managment_system.DataAccessObject.CustomerDAO;
 import com.stav.library_managment_system.Models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@Controller
+
 @RequestMapping("/api/customer")
+@RestController
 public class CustomerController {
 
     @Autowired
-    private CustomerDAO customerDAO;
+    private CustomerDAO eDAO;
 
     @GetMapping("/all")
-    public List<Customer> getCustomers() {
-        return customerDAO.getAll();
-
+    public List<Customer> findAll() {
+        return eDAO.findAll();
     }
 
-    @GetMapping("/{customerId}")
-    public void getCustomerById(@PathVariable int customerId){
-        customerDAO.getById(customerId);
-
+    @PostMapping("/insert")
+    public String insert(@RequestBody Customer customer) {
+        return eDAO.insert(customer)+" Customer saved successfully";
     }
 
-    @PostMapping()
-    public int createCustomer(@RequestBody Customer customer){
-        return customerDAO.save(customer);
+    @DeleteMapping("/employees/{id}")
+    public String deleteById(@PathVariable int id) {
+        return eDAO.deleteById(id)+" Customer(s) delete from the database";
     }
 
-    @PutMapping("/{customerId}")
-    public int updateCustomer(@PathVariable int customerId,@RequestBody Customer customer){
-        return  customerDAO.update(customer,customerId);
 
-    }
-
-    @DeleteMapping("/{customerId}")
-    public void deleteCustomerById(@PathVariable int customerId){
-        customerDAO.delete(customerId);
-    }
 }
