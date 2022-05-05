@@ -1,6 +1,6 @@
 package com.stav.library_managment_system.Controller;
 
-import com.stav.library_managment_system.DataAccessObject.BookDAO;
+import com.stav.library_managment_system.DAO.BookDAO;
 import com.stav.library_managment_system.Models.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -37,13 +37,13 @@ public class BookController {
     public ResponseEntity<?> createBook(@RequestBody Book book){
         int result = bookDAO.save(book);
         if (result == -1){
-            return  new ResponseEntity<String>("Something want wrong",HttpStatus.BAD_REQUEST);
+            return  new ResponseEntity<String>("Something was wrong",HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<String>(" book added successfully!" + book.getTitle(),HttpStatus.CREATED);
     }
 
     @PutMapping("/{bookId}")
-    public ResponseEntity<?> updateBook(@PathVariable int bookId, @RequestBody Book book) {
+    public ResponseEntity<?> updateBook( @RequestBody Book book, @PathVariable int bookId) {
         int result= bookDAO.update(book, bookId);
         return new ResponseEntity<String>("book updated successfully!",HttpStatus.OK);
     }

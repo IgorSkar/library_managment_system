@@ -1,6 +1,6 @@
 package com.stav.library_managment_system.Controller;
 
-import com.stav.library_managment_system.DataAccessObject.AuthorDAO;
+import com.stav.library_managment_system.DAO.AuthorDAO;
 import com.stav.library_managment_system.Models.Author;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -35,6 +35,16 @@ public class AuthorController {
         return new ResponseEntity<Author>(author, HttpStatus.OK);
     }
 
+       @GetMapping()
+      public  ResponseEntity<?> getAuthorByName(@RequestParam String name){
+         Author  author = null;
+         try {
+             author  = authorDAO.getAuthorByName(name);
+         } catch (DataAccessException e){
+             return  new ResponseEntity<String>(" author name not found in database" ,HttpStatus.BAD_REQUEST);
+         }
+         return new ResponseEntity<Author>(author,HttpStatus.OK);
+      }
 
     @PostMapping()
     public ResponseEntity<?> createAuthor(@RequestBody Author author){
@@ -57,7 +67,6 @@ public class AuthorController {
         authorDAO.delete(authorId);
         return  new ResponseEntity<String>("author deleted successfully!",HttpStatus.OK);
     }
-
 
 
 }

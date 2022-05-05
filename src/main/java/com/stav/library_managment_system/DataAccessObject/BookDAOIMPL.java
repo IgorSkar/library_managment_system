@@ -1,5 +1,6 @@
 package com.stav.library_managment_system.DataAccessObject;
 
+import com.stav.library_managment_system.DAO.BookDAO;
 import com.stav.library_managment_system.Models.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

@@ -1,5 +1,6 @@
 package com.stav.library_managment_system.DataAccessObject;
 
+import com.stav.library_managment_system.DAO.AuthorDAO;
 import com.stav.library_managment_system.Models.Author;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -25,6 +26,11 @@ public class AuthorDAOIMLP implements AuthorDAO {
         return author;
     }
 
+     @Override
+     public Author getAuthorByName(String name) throws DataAccessException{
+         Author author = jdbcTemplate.queryForObject("SELECT * FROM authors WHERE name=?", new BeanPropertyRowMapper<Author>(Author.class),name);
+         return author;
+     }
 
     @Override
     public int save(Author author) {
@@ -41,7 +47,7 @@ public class AuthorDAOIMLP implements AuthorDAO {
 
     @Override
     public void delete(int authorId) {
-        jdbcTemplate.update("DELETE  FROM authors WHERE author_id=?",authorId);
+       jdbcTemplate.update("DELETE  FROM authors WHERE author_id=?",authorId);
 
     }
 }
