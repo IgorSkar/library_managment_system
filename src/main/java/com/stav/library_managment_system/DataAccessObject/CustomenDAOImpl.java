@@ -16,30 +16,22 @@ public class CustomenDAOImpl implements CustomerDAO {
 
 
     @Override
-    public int save(Customer customer) {
-        return jdbcTemplate.update("INSERT INTO customers (firsName, lastName, email, password) VALUES (null, ?, ?, ?, ?)", new Object[] {customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword()});
-
-    }
-
-    @Override
-    public int update(Customer customer, int id) {
-
-        return jdbcTemplate.update("UPDATE customers SET first_name = ?, last_name = ?, email = ?, password = ?  WHERE customer_id = ?", new Object[] {customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(), id});
-    }
-
-    @Override
-    public int delete(int id) {
-        return jdbcTemplate.update("DELETE FROM customers WHERE customer_id=?", id);
-    }
-
-    @Override
-    public List<Customer> getAll() {
+    public List<Customer> findAll() {
         return jdbcTemplate.query("SELECT * FROM customers", new BeanPropertyRowMapper<Customer>(Customer.class));
     }
 
     @Override
-    public Customer getById(int id) {
+    public int deleteById(int id) {
+        return jdbcTemplate.update("DELETE FROM customers WHERE customer_id=?", id);
+    }
 
-        return jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id=?", new BeanPropertyRowMapper<Customer>(Customer.class), id);
+    @Override
+    public int insert(Customer customer) {
+        return jdbcTemplate.update("INSERT INTO customers (first_name, last_name, email, password) VALUES (?, ?, ?, ?)", new Object[] {customer.getFirst_name(), customer.getLast_name(), customer.getEmail(), customer.getPassword()});
+    }
+
+    @Override
+    public int update(Customer customer, int id) {
+        return 0;
     }
 }

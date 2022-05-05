@@ -4,18 +4,13 @@ import com.stav.library_managment_system.Models.Customer;
 
 import java.util.List;
 
-public interface CustomerDAO  {
+public interface CustomerDAO {
 
+    public List<Customer> findAll();
 
-    int save(Customer customer);
+    public int deleteById(int id);
 
+    public int insert(Customer customer);
 
-    int  update(Customer customer, int id);
-
-    int   delete(int id);
-
-    List<Customer> getAll();
-
-    Customer getById(int id);
-
+    public int update(Customer customer, int id);
 }

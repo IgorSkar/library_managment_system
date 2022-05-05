@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Customer {
-    private int customerId;
-    private String firstName;
-    private String lastName;
+    private int customer_id;
+    private String first_name;
+    private String last_name;
     private String email;
     private String password;
 
