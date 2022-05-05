@@ -1,8 +1,11 @@
 package com.stav.library_managment_system.Controller;
 
-import com.stav.library_managment_system.DataAccessObject.CustomerDAO;
+import com.stav.library_managment_system.DAO.CustomerDAO;
 import com.stav.library_managment_system.Models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,22 +15,59 @@ import java.util.List;
 public class CustomerController {
 
     @Autowired
-    private CustomerDAO eDAO;
+    private CustomerDAO customerDAO;
+
 
     @GetMapping("/all")
     public List<Customer> findAll() {
-        return eDAO.findAll();
+        return customerDAO.findAll();
     }
 
-    @PostMapping("/insert")
-    public String insert(@RequestBody Customer customer) {
-        return eDAO.insert(customer)+" Customer saved successfully";
+    @GetMapping("/{customerId}")
+    public  ResponseEntity<?> getCustomerById(@PathVariable int customerId){
+        Customer customer = null;
+        try {
+            customer = customerDAO.getById(customerId);
+        } catch (DataAccessException e){
+            return  new ResponseEntity<String>(" id not found", HttpStatus.BAD_REQUEST);
+        }
+         return  new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }
 
-    @DeleteMapping("/employees/{id}")
-    public String deleteById(@PathVariable int id) {
-        return eDAO.deleteById(id)+" Customer(s) delete from the database";
+      @GetMapping()
+      public  ResponseEntity<?> getCustomerByFirstName(@RequestParam String firstName){
+         Customer customer= null;
+         try {
+             customer = customerDAO.getByFirstName(firstName);
+         } catch (DataAccessException e){
+             return  new ResponseEntity<String>(" customer fist_name not found in database" ,HttpStatus.BAD_REQUEST);
+         }
+         return new ResponseEntity<Customer>(customer,HttpStatus.OK);
+      }
+
+    @PostMapping()
+    public ResponseEntity<?> createCustomer(@RequestBody Customer customer) {
+       int result = customerDAO.save(customer);
+       if (result == -1){
+           return new ResponseEntity<String>(" Something was wrong!", HttpStatus.BAD_REQUEST);
+       }
+        return  new ResponseEntity<String>(" Customer saved successfully!" + customer.getFirst_name(),HttpStatus.OK);
+    }
+
+    @PutMapping("/{customerId}")
+    public  ResponseEntity<?> updateCustomer(@RequestBody Customer customer, @PathVariable int customerId){
+        int result = customerDAO.update(customer,customerId);
+        return  new ResponseEntity<String>("customer updated successfully!", HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/{customerId}")
+    public ResponseEntity<?> deleteCustomerById(@PathVariable int customerId) {
+        customerDAO.deleteById(customerId);
+
+        return  new ResponseEntity<String>("customer deleted successfully!",HttpStatus.OK);
     }
 
 
 }
+
