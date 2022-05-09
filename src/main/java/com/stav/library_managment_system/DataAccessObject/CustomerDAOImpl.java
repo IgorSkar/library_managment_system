@@ -57,15 +57,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     public Customer isValidCustomer(String email, String password) {
         String query = "SELECT * FROM customers WHERE email =? AND password =?";
         try {
-            Customer customer = jdbcTemplate.queryForObject(query, (rs, rowNum) -> {
-                return new Customer(
-                        rs.getInt("customer_id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("email"),
-                        rs.getString("password")
-                );
-            });
+            Customer customer = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Customer.class), email, password);
             return customer;
         }catch(EmptyResultDataAccessException e){
             return null;
