@@ -23,45 +23,49 @@ public class BookController {
 
 
     @GetMapping("/all")
-    public List<Book> geAllBooks(){
+    public List<Book> geAllBooks() {
         return bookDAO.getBookList();
     }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<?> getBookById(@PathVariable int bookId){
+    public ResponseEntity<?> getBookById(@PathVariable int bookId) {
         Book book = null;
         try {
             book = bookDAO.getBookById(bookId);
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             e.printStackTrace();
-            return new ResponseEntity<String>("Book id not found in the database " +book.getBookId(), HttpStatus.BAD_REQUEST);
-        } return new ResponseEntity<Book>(book,HttpStatus.OK);
+            return new ResponseEntity<String>("Book id not found in the database " + book.getBookId(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<Book>(book, HttpStatus.OK);
     }
 
     @GetMapping("/add/{bookId}")
-     public String getBookByBookIdAndBookDetails(@PathVariable int bookId){
+    public String getBookByBookIdAndBookDetails(@PathVariable int bookId) {
 
         return bookDAO.getBookWithBookId(bookId);
     }
 
-      @GetMapping()
-      public ResponseEntity<?> getBookByISBN(@RequestParam String ISBN) throws ResourceNotFoundException {
+    @GetMapping()
+    public ResponseEntity<?> getBookByISBN(@RequestParam String ISBN) throws ResourceNotFoundException {
         Book book = null;
         try {
             book = bookDAO.getBookByISBN(ISBN);
-        } catch (DataAccessException e){
+        } catch (DataAccessException e) {
             e.printStackTrace();
-            return  new ResponseEntity<String>("book ISBN not found in the database" +book.getIsbn(),HttpStatus.BAD_REQUEST);
-        } return  new ResponseEntity<Book>(book,HttpStatus.OK);
+            return new ResponseEntity<String>("book ISBN not found in the database" + book.getIsbn(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<Book>(book, HttpStatus.OK);
 
-      }
+    }
 
-      @PostMapping()
-      public ResponseEntity<?> createBook(@RequestParam String ISBN){
-         int result = bookDAO.save(ISBN);
-         if (result == -1){
-            return new ResponseEntity<String>("OBS:Something was wrong",HttpStatus.BAD_REQUEST);
-         } return new ResponseEntity<String>("book added successfully!",HttpStatus.OK);
-      }
+    @PostMapping()
+    public ResponseEntity<?> createBook(@RequestParam String ISBN) {
+        int result = bookDAO.save(ISBN);
+        if (result == -1) {
+            return new ResponseEntity<String>("OBS:Something was wrong", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<String>("book added successfully!", HttpStatus.OK);
+    }
+}
 
 
