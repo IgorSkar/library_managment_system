@@ -34,7 +34,7 @@ public class BookController {
             book = bookDAO.getBookById(bookId);
         } catch (DataAccessException e) {
             e.printStackTrace();
-            return new ResponseEntity<String>("Book id not found in the database " + book.getBookId(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Book id not found in the database " + book.getBook_id(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Book>(book, HttpStatus.OK);
     }

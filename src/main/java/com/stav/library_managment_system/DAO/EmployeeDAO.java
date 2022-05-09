@@ -12,6 +12,8 @@ public interface EmployeeDAO {
 
      Employee getEmployeeId (int employeeId);
 
+     boolean isValidEmployee(String user_name, String password);
+
 
     int save (Employee employee);
 

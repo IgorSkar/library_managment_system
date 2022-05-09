@@ -1,14 +1,11 @@
 package com.stav.library_managment_system.Controller;
 
-import com.stav.library_managment_system.DataAccessObject.CustomerDAO;
+import com.stav.library_managment_system.DAO.CustomerDAO;
 import com.stav.library_managment_system.Models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/api/customer")
 @RestController
@@ -24,7 +21,7 @@ public class CustomerController {
 
     @PostMapping("/insert")
     public String insert(@RequestBody Customer customer) {
-        return eDAO.insert(customer)+" Customer saved successfully";
+        return eDAO.save(customer)+" Customer saved successfully";
     }
 
     @DeleteMapping("/employees/{id}")

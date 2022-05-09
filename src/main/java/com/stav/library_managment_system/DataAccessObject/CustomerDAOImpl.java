@@ -1,5 +1,6 @@
 package com.stav.library_managment_system.DataAccessObject;
 
+import com.stav.library_managment_system.DAO.CustomerDAO;
 import com.stav.library_managment_system.Models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -37,7 +38,12 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public int insert(Customer customer) {
+    public Customer getByFirstName(String firstName) {
+        return null;
+    }
+
+    @Override
+    public int save(Customer customer) {
         return jdbcTemplate.update("INSERT INTO customers (first_name, last_name, email, password) VALUES (?, ?, ?, ?)", new Object[] {customer.getFirst_name(), customer.getLast_name(), customer.getEmail(), customer.getPassword()});
     }
 
@@ -61,5 +67,10 @@ public class CustomerDAOImpl implements CustomerDAO {
         SqlParameterSource in = new MapSqlParameterSource(inParams);
 
         return (int) jdbcCall.execute(in).get("userExists")>=1;
+    }
+
+    @Override
+    public Customer getById(int customerId) {
+        return null;
     }
 }
