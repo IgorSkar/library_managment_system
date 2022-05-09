@@ -5,19 +5,20 @@ import java.util.List;
 
 public interface CustomerDAO  {
 
-     List<Customer> findAll();
+    List<Customer> findAll();
+
 
      Customer isValidCustomer(String email, String password);
 
-     Customer getById (int customerId);
+    Customer getById (int customerId);
 
     int save (Customer customer);
 
     int update(Customer customer, int customerId);
 
 
-    int deleteById(int customerId);
+    void  deleteById(int customerId);
 
-      Customer getByFirstName(String firstName);
+    Customer getByFirstName(String firstName);
 }
 

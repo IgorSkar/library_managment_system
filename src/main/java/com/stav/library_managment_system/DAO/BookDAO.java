@@ -23,6 +23,8 @@ public interface BookDAO {
 
     String getBookWithBookId(int bookId);
 
+     int ISBNCount();
+
 }
 
 

@@ -57,4 +57,10 @@ public class BookDAOImpl implements BookDAO {
 
         return result;
     }
+
+    @Override
+    public int ISBNCount() {
+        String sql = "SELECT COUNT(*) FROM BOOKS WHERE ISBN='12345678'";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
 }
