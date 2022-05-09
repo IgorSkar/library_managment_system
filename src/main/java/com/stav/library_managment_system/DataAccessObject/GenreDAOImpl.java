@@ -30,9 +30,9 @@ public class GenreDAOImpl implements GenreDAO {
        return  jdbcTemplate.update("INSERT INTO genre (name) VALUES (?)", new Object[] {genre});
 
     }
-     // jag tror inte att vi behöver en delete metod här
     @Override
     public void deleteGenre(int genreId) {
+        jdbcTemplate.update("DELETE genre WHERE genre_id=?",genreId);
 
     }
 }
