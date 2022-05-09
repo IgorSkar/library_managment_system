@@ -12,12 +12,12 @@ BookDetailsDAO {
 
     BookDetails getBookByTitle(String title);
 
-    BookDetails findById(int bookDetailsId);
+    BookDetails findByISBN(String ISBN);
 
     int save(BookDetails bookDetailsId);
 
-    int update(BookDetails bookDetails, int bookDetailsId);
+    int update(BookDetails bookDetails, String ISBN);
 
-    int deleteById(int bookDetailsId);
+    int deleteById(String  ISBN);
 
 }

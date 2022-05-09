@@ -17,7 +17,7 @@ public class BookDetailsController {
     private BookDetailsDAO bookDetailsDAO;
 
     @GetMapping("/all")
-    public List<BookDetails> getAllBooks(){
+    public List<BookDetails> getAllBookDetails(){
         return bookDetailsDAO.findAll();
     }
 
@@ -36,14 +36,14 @@ public class BookDetailsController {
      }
 
 
-       @GetMapping("/{bookDetailsId}")
-    public ResponseEntity<?> getBookById(@PathVariable int bookDetailsId){
+       @GetMapping("/{ISBN}")
+    public ResponseEntity<?> getBookByISBN(@PathVariable String ISBN){
         BookDetails bookDetails = null;
         try {
-            bookDetails  = bookDetailsDAO.findById(bookDetailsId);
+            bookDetails  = bookDetailsDAO.findByISBN(ISBN);
         } catch (DataAccessException e){
             e.printStackTrace();
-            return  new ResponseEntity<String>("id not found", HttpStatus.BAD_REQUEST);
+            return  new ResponseEntity<String>("ISBN not found", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<BookDetails>(bookDetails,HttpStatus.OK);
     }
@@ -58,18 +58,18 @@ public class BookDetailsController {
         return new ResponseEntity<String>(" book added successfully!",HttpStatus.CREATED);
     }
       // update funkar inte
-    @PutMapping("/{bookDetailsId}")
-    public ResponseEntity<?> updateBook( @RequestBody BookDetails bookDetails, @PathVariable int bookDetailsId) {
-        int result= bookDetailsDAO.update(bookDetails, bookDetailsId);
+    @PutMapping("/{ISBN}")
+    public ResponseEntity<?> updateBook( @RequestBody BookDetails bookDetails, @PathVariable String ISBN) {
+        int result= bookDetailsDAO.update(bookDetails, ISBN);
         return new ResponseEntity<String>("book updated successfully!",HttpStatus.OK);
     }
 
 
 
-   @DeleteMapping("/{bookDetailsId}")
+   @DeleteMapping("/{ISBN}")
 
-    public ResponseEntity<?> deleteBookById(@PathVariable int bookDetailsId){
-        int result = bookDetailsDAO.deleteById(bookDetailsId);
+    public ResponseEntity<?> deleteBookById(@PathVariable String ISBN){
+        int result = bookDetailsDAO.deleteById(ISBN);
         return new ResponseEntity<String>("book deleted successfully!",HttpStatus.OK);
     }
 
