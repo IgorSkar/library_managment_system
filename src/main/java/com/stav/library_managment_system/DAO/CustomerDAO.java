@@ -7,7 +7,7 @@ public interface CustomerDAO  {
 
      List<Customer> findAll();
 
-     boolean isValidCustomer(String email, String password);
+     Customer isValidCustomer(String email, String password);
 
      Customer getById (int customerId);
 
