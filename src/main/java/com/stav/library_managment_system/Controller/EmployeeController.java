@@ -45,18 +45,10 @@ public class EmployeeController {
          return new ResponseEntity<Employee>(employee,HttpStatus.OK);
       }
 
-    /*   @GetMapping("login")
-       public int isValidUserAndPassword(@RequestParam String userName, @RequestParam String password){
-        Employee employee = null;
-        try {
-            employeeDAO.isValidUserAndPassword(userName,password);
-        } catch (DataAccessException e){
-
-        }
-
-       }
-
-     */
+    @GetMapping("/employeeLogin")
+       public boolean isValidEmployee(@RequestParam() String user_name, @RequestParam() String password) {
+        return employeeDAO.isValidEmployee(user_name, password);
+    }
 
 
     @PostMapping()

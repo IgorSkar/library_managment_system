@@ -79,10 +79,11 @@ public class LoanDAOImpl implements LoanDAO {
     public String saveWithISBN(String isbn, int customerId)  throws EmptyResultDataAccessException, DataIntegrityViolationException {
         Book book=  jdbcTemplate.queryForObject("SELECT * FROM books WHERE isbn=? limit 1", new BeanPropertyRowMapper<Book>(Book.class),isbn);
         BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE isbn=?", new BeanPropertyRowMapper<BookDetails>(BookDetails.class),book.getIsbn());
+
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date date = new Date();
          String loanDate = dateFormat.format(date);
-        jdbcTemplate.update("INSERT INTO loans (book_id,customer_id,loan_date,return_date) VALUES (?,?,?,?)",new Object[]{book.getBookId(),customerId,loanDate,loanDate});
+        jdbcTemplate.update("INSERT INTO loans (book_id,customer_id,loan_date,return_date) VALUES (?,?,?,?)",new Object[]{book.getBook_id(),customerId,loanDate,loanDate});
           String result = "book" + bookDetails.toString() + "loans to " + customerId + "on loan " + loanDate;
         System.out.println(result);
         return result;

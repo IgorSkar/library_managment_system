@@ -16,7 +16,7 @@ public interface CustomerDAO  {
     int update(Customer customer, int customerId);
 
 
-    void  deleteById(int customerId);
+    int deleteById(int customerId);
 
       Customer getByFirstName(String firstName);
 }

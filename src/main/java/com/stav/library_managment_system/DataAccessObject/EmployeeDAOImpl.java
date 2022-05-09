@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,24 +59,23 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         return employee;
     }
 
-   /* @Override
-    public Employee isValidUserAndPassword(String userName, String password) {
-        Map<String, String> inParameters = new HashMap<>();
+   @Override
+    public boolean isValidEmployee(String user_name, String password) {
+       String query = "call checkLoginEmployee(?,?))";
 
+       SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+               .withProcedureName("checkLoginEmployee")
+               .declareParameters(new SqlOutParameter("employeeExists", Types.INTEGER));
 
-        inParameters.put("username2", userName);
-        inParameters.put("password2", password);
+       Map<String, String > inParams = new HashMap<>();
+       inParams.put("user_name_p", user_name+"");
+       inParams.put("password_p", password+"");
 
-        SqlParameterSource in = new MapSqlParameterSource(inParameters);
+       SqlParameterSource in = new MapSqlParameterSource(inParams);
 
-        Map<String, Object> outParameters = jdbcCall.execute(in);
-
-        jdbcCall.execute(in);
-
-        return (Employee) outParameters;
-    }
-
-    */
+       return (int) jdbcCall.execute(in).get("employeeExists")>=1;
+   }
 }
+
 
 

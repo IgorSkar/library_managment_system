@@ -51,7 +51,6 @@ public class BookDAOImpl implements BookDAO {
 
     @Override
     public String getBookWithBookId(int bookId) {
-
         Book book = jdbcTemplate.queryForObject("SELECT * FROM books WHERE book_id=?",new BeanPropertyRowMapper<Book>(Book.class),bookId);
         BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE isbn=?", new BeanPropertyRowMapper<BookDetails>(BookDetails.class),book.getIsbn());
         String result = "book" + bookDetails.toString() +  "BookId " + bookId;
