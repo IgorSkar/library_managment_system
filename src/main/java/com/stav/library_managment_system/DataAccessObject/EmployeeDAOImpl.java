@@ -1,9 +1,11 @@
 package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.EmployeeDAO;
+import com.stav.library_managment_system.Models.Customer;
 import com.stav.library_managment_system.Models.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
@@ -60,20 +62,14 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 
    @Override
-    public boolean isValidEmployee(String user_name, String password) {
-       String query = "call checkLoginEmployee(?,?))";
-
-       SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-               .withProcedureName("checkLoginEmployee")
-               .declareParameters(new SqlOutParameter("employeeExists", Types.INTEGER));
-
-       Map<String, String > inParams = new HashMap<>();
-       inParams.put("user_name_p", user_name+"");
-       inParams.put("password_p", password+"");
-
-       SqlParameterSource in = new MapSqlParameterSource(inParams);
-
-       return (int) jdbcCall.execute(in).get("employeeExists")>=1;
+    public Employee isValidEmployee(String user_name, String password) {
+       String query = "SELECT * FROM employees WHERE user_name =? AND password =?";
+       try {
+           Employee employee = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Employee.class), user_name, password);
+           return employee;
+       }catch(EmptyResultDataAccessException e){
+           return null;
+       }
    }
 }
 

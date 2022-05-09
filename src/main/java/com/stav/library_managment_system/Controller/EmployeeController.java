@@ -46,7 +46,7 @@ public class EmployeeController {
       }
 
     @GetMapping("/employeeLogin")
-       public boolean isValidEmployee(@RequestParam() String user_name, @RequestParam() String password) {
+       public Employee isValidEmployee(@RequestParam() String user_name, @RequestParam() String password) {
         return employeeDAO.isValidEmployee(user_name, password);
     }
 
