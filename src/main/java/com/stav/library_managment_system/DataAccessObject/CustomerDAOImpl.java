@@ -3,6 +3,7 @@ package com.stav.library_managment_system.DataAccessObject;
 import com.stav.library_managment_system.DAO.CustomerDAO;
 import com.stav.library_managment_system.Models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
@@ -53,20 +54,22 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public boolean isValidCustomer(String email, String password) {
-        String query = "call checkLogin(?,?))";
-
-        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-                .withProcedureName("checkLogin")
-                .declareParameters(new SqlOutParameter("userExists", Types.INTEGER));
-
-        Map<String, String > inParams = new HashMap<>();
-        inParams.put("email_p", email+"");
-        inParams.put("password_p", password+"");
-
-        SqlParameterSource in = new MapSqlParameterSource(inParams);
-
-        return (int) jdbcCall.execute(in).get("userExists")>=1;
+    public Customer isValidCustomer(String email, String password) {
+        String query = "SELECT * FROM customers WHERE email =? AND password =?";
+        try {
+            Customer customer = jdbcTemplate.queryForObject(query, (rs, rowNum) -> {
+                return new Customer(
+                        rs.getInt("customer_id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("email"),
+                        rs.getString("password")
+                );
+            });
+            return customer;
+        }catch(EmptyResultDataAccessException e){
+            return null;
+        }
     }
 
     @Override

@@ -30,7 +30,7 @@ public class CustomerController {
     }
 
     @GetMapping("/login")
-    public boolean isValidCustomer(@RequestParam() String email,@RequestParam() String password){
+    public Customer isValidCustomer(@RequestParam() String email,@RequestParam() String password){
         System.out.println(email);
         System.out.println(password);
         return eDAO.isValidCustomer(email, password);
