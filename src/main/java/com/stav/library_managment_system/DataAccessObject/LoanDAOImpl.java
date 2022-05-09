@@ -78,7 +78,7 @@ public class LoanDAOImpl implements LoanDAO {
     @Override
     public String saveWithISBN(String isbn, int customerId)  throws EmptyResultDataAccessException, DataIntegrityViolationException {
         Book book=  jdbcTemplate.queryForObject("SELECT * FROM books WHERE isbn=? limit 1", new BeanPropertyRowMapper<Book>(Book.class),isbn);
-        BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE book_id=?", new BeanPropertyRowMapper<BookDetails>(BookDetails.class),book.getBookId());
+        BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE isbn=?", new BeanPropertyRowMapper<BookDetails>(BookDetails.class),book.getIsbn());
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date date = new Date();
          String loanDate = dateFormat.format(date);
