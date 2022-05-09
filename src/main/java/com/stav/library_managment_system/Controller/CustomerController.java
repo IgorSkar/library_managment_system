@@ -1,6 +1,7 @@
 package com.stav.library_managment_system.Controller;
 
 import com.stav.library_managment_system.DAO.CustomerDAO;
+import com.stav.library_managment_system.Exception.apiRequestException;
 import com.stav.library_managment_system.Models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/api/customer")
@@ -20,7 +22,9 @@ public class CustomerController {
 
     @GetMapping("/all")
     public List<Customer> findAll() {
-        return customerDAO.findAll();
+        throw new apiRequestException("Oops can not get all customer with custom exception ");
+      // return customerDAO.findAll();
+
     }
 
     @GetMapping("/{customerId}")
@@ -29,6 +33,7 @@ public class CustomerController {
         try {
             customer = customerDAO.getById(customerId);
         } catch (DataAccessException e){
+
             return  new ResponseEntity<String>(" id not found", HttpStatus.BAD_REQUEST);
         }
          return  new ResponseEntity<Customer>(customer, HttpStatus.OK);

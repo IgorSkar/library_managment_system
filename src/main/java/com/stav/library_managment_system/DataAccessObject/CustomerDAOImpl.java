@@ -1,6 +1,7 @@
 package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.CustomerDAO;
+import com.stav.library_managment_system.Exception.ApiException;
 import com.stav.library_managment_system.Models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -16,7 +17,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Customer> findAll() {
+    public List<Customer> findAll()  {
         return jdbcTemplate.query("SELECT * FROM customers", new BeanPropertyRowMapper<Customer>(Customer.class));
     }
 
