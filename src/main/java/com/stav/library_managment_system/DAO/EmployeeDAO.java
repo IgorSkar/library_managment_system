@@ -1,7 +1,6 @@
 package com.stav.library_managment_system.DAO;
 
 import com.stav.library_managment_system.Models.Employee;
-import org.springframework.dao.DataAccessException;
 
 import java.util.List;
 
@@ -22,4 +21,7 @@ public interface EmployeeDAO {
     void delete(int employeeId);
 
     Employee getByFirstName(String firstName) ;
+
+
+   // Employee isValidUserAndPassword(String userName, String password);
 }

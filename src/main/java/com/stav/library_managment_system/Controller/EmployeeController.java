@@ -45,6 +45,20 @@ public class EmployeeController {
          return new ResponseEntity<Employee>(employee,HttpStatus.OK);
       }
 
+    /*   @GetMapping("login")
+       public int isValidUserAndPassword(@RequestParam String userName, @RequestParam String password){
+        Employee employee = null;
+        try {
+            employeeDAO.isValidUserAndPassword(userName,password);
+        } catch (DataAccessException e){
+
+        }
+
+       }
+
+     */
+
+
     @PostMapping()
     public ResponseEntity<?> createEmployee(@RequestBody Employee employee){
         int result = employeeDAO.save(employee);

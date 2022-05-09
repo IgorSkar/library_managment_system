@@ -1,21 +1,28 @@
 package com.stav.library_managment_system.DAO;
 
 import com.stav.library_managment_system.Models.Book;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface BookDAO {
 
-    List<Book> findAll();
 
-    Book findById(int book_d);
+    List<Book> getBookList();
 
-    int  save(Book book);
 
-    int update(Book book, int book_id);
+    Book getBookById(int bookId);
 
-    int deleteById(int book_id);
+
+    Book getBookByISBN(String ISBN);
+
+
+    int save(String ISBN);
+
+
+    int  deleteBook(int bookId);
+
+    String getBookWithBookId(int BookId);
 
 }
+
+
