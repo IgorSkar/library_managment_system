@@ -66,6 +66,12 @@ public class BookController {
         }
         return new ResponseEntity<String>("book added successfully!", HttpStatus.OK);
     }
+    @DeleteMapping("/{bookId}")
+
+    public ResponseEntity<?> deleteBookById(@PathVariable int bookId){
+        int result = bookDAO.deleteBook(bookId);
+        return new ResponseEntity<String>("book deleted successfully!",HttpStatus.OK);
+    }
 }
 
 
