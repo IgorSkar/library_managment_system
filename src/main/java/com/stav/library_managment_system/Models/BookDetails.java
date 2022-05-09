@@ -1,15 +1,14 @@
 package com.stav.library_managment_system.Models;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+
 @NoArgsConstructor
 public class BookDetails {
 
-    private int book_id;
+    private String isbn;
     private String title;
     private String Description;
     private String language;
@@ -17,7 +16,15 @@ public class BookDetails {
     private String image_source;
     private  int pages;
 
-    public BookDetails(int book_id, String title, String description, String language, String published, String image_source, String pages, String title1) {
+
+    public BookDetails(String isbn, String title, String description, String language, String published, String image_source, int pages) {
+        this.isbn = isbn;
+        this.title = title;
+        Description = description;
+        this.language = language;
+        this.published = published;
+        this.image_source = image_source;
+        this.pages = pages;
     }
 }
 

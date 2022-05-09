@@ -21,7 +21,7 @@ public interface BookDAO {
 
     int  deleteBook(int bookId);
 
-    String getBookWithBookId(int BookId);
+    String getBookWithBookId(int bookId);
 
 }
 
