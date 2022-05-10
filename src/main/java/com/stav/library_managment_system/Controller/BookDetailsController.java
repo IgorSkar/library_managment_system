@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bookDetails")
+@RequestMapping("api/book_details")
 public class BookDetailsController {
     @Autowired
     private BookDetailsDAO bookDetailsDAO;
 
-    @GetMapping("/all")
+    @GetMapping
     public List<BookDetails> getAllBookDetails(){
         return bookDetailsDAO.findAll();
     }
 
 
-     @GetMapping()
+     @GetMapping("123")
      public  ResponseEntity<?> getBookDetailsByTittle(@RequestParam String title){
          BookDetails bookDetails = null;
          try {

@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employee")
+@RequestMapping("api/employees")
 public class EmployeeController {
 
     @Autowired
     private EmployeeDAO employeeDAO;
 
 
-    @GetMapping("/all")
+    @GetMapping
 
     public List<Employee> getAllEmployees(){
         return employeeDAO.getAllEmployees();
@@ -34,7 +34,7 @@ public class EmployeeController {
         }
         return  new ResponseEntity<Employee>(employee,HttpStatus.OK);
     }
-    @GetMapping()
+    @GetMapping("123")
       public ResponseEntity<?> getEmployeeByName(@RequestParam String firstName){
          Employee employee = null;
          try {
@@ -51,13 +51,9 @@ public class EmployeeController {
     }
 
 
-    @PostMapping()
-    public ResponseEntity<?> createEmployee(@RequestBody Employee employee){
-        int result = employeeDAO.save(employee);
-        if (result == -1){
-            return  new ResponseEntity<String>("Something was wrong",HttpStatus.BAD_REQUEST);
-        }
-        return  new ResponseEntity<String>("Added employee successfully!" + employee.getFirst_name(),HttpStatus.OK);
+    @GetMapping("create")
+    public boolean createCustomer(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String username, @RequestParam String password, @RequestParam String role){
+        return employeeDAO.createEmployee(firstName, lastName, username, password, role);
     }
 
     @PutMapping("/{employeeId}")

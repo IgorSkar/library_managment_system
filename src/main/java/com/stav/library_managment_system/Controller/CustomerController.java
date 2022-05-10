@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("api/customers")
 public class CustomerController {
 
     @Autowired
     private CustomerDAO customerDAO;
 
-    @GetMapping("/all")
+    @GetMapping
     public List<Customer> findAll() {
 
         return customerDAO.findAll();
@@ -33,7 +33,7 @@ public class CustomerController {
         return  new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }
 
-    @GetMapping()
+    @GetMapping("123")
     public  ResponseEntity<?> getCustomerByFirstName(@RequestParam String firstName){
         Customer customer= null;
         try {
@@ -44,13 +44,9 @@ public class CustomerController {
         return new ResponseEntity<Customer>(customer,HttpStatus.OK);
     }
 
-    @PostMapping()
-    public ResponseEntity<?> createCustomer(@RequestBody Customer customer) {
-        int result = customerDAO.save(customer);
-        if (result == -1){
-            return new ResponseEntity<String>(" Something was wrong!", HttpStatus.BAD_REQUEST);
-        }
-        return  new ResponseEntity<String>(" Customer saved successfully!" + customer.getFirst_name(),HttpStatus.OK);
+    @GetMapping("/create")
+    public boolean createCustomer(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String mail, @RequestParam String password){
+        return customerDAO.createCustomer(firstName, lastName, mail, password);
     }
 
     @PutMapping("/{customerId}")
@@ -69,9 +65,7 @@ public class CustomerController {
 
 
     @GetMapping("/login")
-    public Customer isValidCustomer(@RequestParam() String email,@RequestParam() String password){
-        System.out.println(email);
-        System.out.println(password);
+    public Customer isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
         return customerDAO.isValidCustomer(email, password);
     }
 

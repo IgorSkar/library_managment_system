@@ -8,11 +8,15 @@ public interface LoanDAO {
 
     List<Loan> getAllLoanList();
 
+    List<Loan> getLoansByCustomerId(int customerId);
+
     Loan getById( int customerId, int bookId);
 
+    int returnBook(int bookId);
+
+    boolean loanBook(String isbn, int customerId, int libraryId);
 
      int save (Loan loan);
-
 
      int update( Loan loan, int customerId);
 

@@ -2,6 +2,7 @@ package com.stav.library_managment_system.Controller;
 
 import com.stav.library_managment_system.DAO.LoanDAO;
 import com.stav.library_managment_system.Models.Loan;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,20 +14,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/loan")
+@RequestMapping("api/loans")
 public class LoanController {
     @Autowired
     private LoanDAO loanDAO;
 
 
-    @GetMapping("/all")
+    @GetMapping
      public List<Loan> getAllLoan(){
         return loanDAO.getAllLoanList();
     }
 
+    @GetMapping("{customer_id}")
+    List<Loan> getLoansByCustomerId(@PathVariable("customer_id") int customerId){
+        return loanDAO.getLoansByCustomerId(customerId);
+    }
 
     @GetMapping("/{customerId}/{bookId}")
-
     public  ResponseEntity<?> getLoanByCustomerId(@PathVariable int customerId,@PathVariable int bookId){
          Loan loan = null;
         System.out.println("customer with id" + customerId);
@@ -35,9 +39,20 @@ public class LoanController {
               loan = loanDAO.getById(customerId,bookId);
          } catch (DataAccessException e){
              e.printStackTrace();
-             return  new ResponseEntity<String>("This bookId and customerId is not found in database",HttpStatus.BAD_REQUEST);
+             return new ResponseEntity<String>("This bookId and customerId is not found in database",HttpStatus.BAD_REQUEST);
          }
-         return  new ResponseEntity<Loan>(loan,HttpStatus.OK);
+         return new ResponseEntity<Loan>(loan,HttpStatus.OK);
+    }
+
+    @GetMapping("return_book/{book_id}")
+    public int returnBook(@PathVariable("book_id") int bookId){
+         return loanDAO.returnBook(bookId);
+    }
+
+    @PostMapping("loan")
+    public boolean loanBook(@RequestBody String data){
+        JSONObject object = new JSONObject(data);
+        return loanDAO.loanBook(object.getString("isbn"), object.getInt("customer_id"), object.getInt("library_id"));
     }
 
 

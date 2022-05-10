@@ -1,6 +1,7 @@
 package com.stav.library_managment_system.DAO;
 
 import com.stav.library_managment_system.Models.Book;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -11,13 +12,13 @@ public interface BookDAO {
     List<Book> getBookList();
 
 
-    Book getBookById(int bookId);
+    JSONObject getBookById(int bookId);
 
 
     Book getBookByISBN(String ISBN);
 
 
-    int save(String ISBN);
+    int save(String ISBN, int libraryId);
 
 
     int  deleteBook(int bookId);
@@ -25,6 +26,8 @@ public interface BookDAO {
     String getBookWithBookId(int bookId);
 
      int ISBNCount(String ISBN);
+
+    List<JSONObject> getAmountOfBookInLibraries(String isbn);
 
 }
 

@@ -37,6 +37,19 @@ public class EmployeeDAOImpl implements EmployeeDAO {
        return employee;
     }
 
+    public boolean createEmployee(String firstName, String lastName, String username, String password, String role){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_customer");
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("first_name", firstName);
+        inParams.put("last_name", lastName);
+        inParams.put("user_name", username);
+        inParams.put("password", password);
+        inParams.put("role", role);
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        return (int) jdbcCall.execute(in).get("succeed") >= 1;
+    }
+
     @Override
     public int save(Employee employee) {
         return jdbcTemplate.update("INSERT INTO employees (first_name,last_name,user_name,password) VALUES (?,?,?,?)",new Object[]{employee.getFirst_name(),employee.getLast_name(),employee.getUser_name(),employee.getPassword()});

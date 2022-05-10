@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/genre")
+@RequestMapping("api/genres")
 public class GenreController {
 
     @Autowired
     private GenreDAO genreDAO;
 
-    @GetMapping("/all")
+    @GetMapping
     public List<Genre> getAllGenres(){
         return genreDAO.getAllGenres();
     }
@@ -35,7 +35,7 @@ public class GenreController {
         return new ResponseEntity<Genre>(genre,HttpStatus.OK);
     }
 
-    @GetMapping()
+    @GetMapping("123")
       public ResponseEntity<?> getGenreByName(String ISBN){
         return null;
     }

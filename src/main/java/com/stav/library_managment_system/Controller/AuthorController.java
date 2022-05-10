@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/author")
+@RequestMapping("api/authors")
 public class AuthorController {
     @Autowired
     private AuthorDAO authorDAO;
 
 
-    @GetMapping("/all")
-    public List<Author> geAllAuthors(){
+    @GetMapping
+    public List<Author> getAllAuthors(){
         return authorDAO.getAllAuthors();
     }
 
@@ -35,8 +35,8 @@ public class AuthorController {
         return new ResponseEntity<Author>(author, HttpStatus.OK);
     }
 
-       @GetMapping()
-      public  ResponseEntity<?> searchAuthorByName(@RequestParam String name){
+       @GetMapping("123")
+      public ResponseEntity<?> searchAuthorByName(@RequestParam(value = "name") String name){
          Author  author = null;
          try {
              author  = authorDAO.searchAuthorByName(name);

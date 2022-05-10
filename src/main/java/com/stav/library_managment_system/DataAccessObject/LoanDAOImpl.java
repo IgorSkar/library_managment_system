@@ -10,14 +10,17 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class LoanDAOImpl implements LoanDAO {
@@ -35,6 +38,21 @@ public class LoanDAOImpl implements LoanDAO {
         return jdbcTemplate.query("SELECT * FROM loans ",new BeanPropertyRowMapper<Loan>(Loan.class));
     }
 
+    public List<Loan> getLoansByCustomerId(int customerId){
+        String query = "SELECT * FROM loans WHERE customer_id=?";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(query, customerId);
+        List<Loan> output = new ArrayList<>();
+        while(rowSet.next()){
+            output.add(new Loan(
+                    rowSet.getInt("book_id"),
+                    rowSet.getInt("customer_id"),
+                    rowSet.getString("loan_date"),
+                    rowSet.getString("return_date")
+            ));
+        }
+        return output;
+    }
+
     /**
      *
      * @param customerId get loan by customerId and bookId
@@ -49,6 +67,28 @@ public class LoanDAOImpl implements LoanDAO {
         return loan;
     }
 
+    public int returnBook(int bookId){
+        String query = "DELETE FROM loans WHERE book_id=?";
+        return jdbcTemplate.update(query, bookId);
+    }
+
+    public boolean loanBook(String isbn, int customerId, int libraryId){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("loan_book");
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("library_id", libraryId+"");
+        inParams.put("ISBN", isbn);
+        inParams.put("customer_id", customerId+"");
+        inParams.put("loan_date", date.format(c.getTime()));
+        c.add(Calendar.MONTH, 1);
+        inParams.put("return_date", date.format(c.getTime()));
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        return (int) jdbcCall.execute(in).get("succeed") >= 1;
+    }
+
     /**
      *
      * @param loan create loan
@@ -59,6 +99,7 @@ public class LoanDAOImpl implements LoanDAO {
     public int save(Loan loan) {
         return jdbcTemplate.update("INSERT INTO loans (book_id,customer_id,loan_date,return_date) VALUES (?,?,?,?)",new Object[]{loan.getBook_id(),loan.getCustomer_id(),loan.getLoan_date(),loan.getReturn_date()});
     }
+
      // behöver vi uppdatera ett befintligt loan iså fall behöver vi uppdatera allt eller räcker det om man vill förlänga return_date bara?
     @Override
     public int update(Loan loan,int customerId) {
@@ -80,7 +121,7 @@ public class LoanDAOImpl implements LoanDAO {
         Book book=  jdbcTemplate.queryForObject("SELECT * FROM books WHERE isbn=? limit 1", new BeanPropertyRowMapper<Book>(Book.class),isbn);
         BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE isbn=?", new BeanPropertyRowMapper<BookDetails>(BookDetails.class),book.getIsbn());
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
          String loanDate = dateFormat.format(date);
         jdbcTemplate.update("INSERT INTO loans (book_id,customer_id,loan_date,return_date) VALUES (?,?,?,?)",new Object[]{book.getBook_id(),customerId,loanDate,loanDate});

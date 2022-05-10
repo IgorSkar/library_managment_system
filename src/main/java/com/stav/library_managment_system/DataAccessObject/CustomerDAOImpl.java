@@ -14,9 +14,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Types;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Repository
 public class CustomerDAOImpl implements CustomerDAO {
@@ -45,6 +44,17 @@ public class CustomerDAOImpl implements CustomerDAO {
         return customer;
     }
 
+    public boolean createCustomer(String firstName, String lastName, String mail, String password){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_customer");
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("first_name", firstName);
+        inParams.put("last_name", lastName);
+        inParams.put("email", mail);
+        inParams.put("password", password);
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        return (int) jdbcCall.execute(in).get("succeed") >= 1;
+    }
 
     @Override
     public int save(Customer customer) {
