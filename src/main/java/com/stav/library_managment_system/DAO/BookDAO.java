@@ -1,6 +1,7 @@
 package com.stav.library_managment_system.DAO;
 
 import com.stav.library_managment_system.Models.Book;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface BookDAO {
 
     String getBookWithBookId(int bookId);
 
-     int ISBNCount();
+     int ISBNCount(String ISBN);
 
 }
 

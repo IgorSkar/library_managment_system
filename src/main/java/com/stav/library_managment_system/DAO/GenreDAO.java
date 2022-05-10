@@ -13,5 +13,5 @@ public interface GenreDAO {
 
      int createGenre(Genre genre);
 
-     void deleteGenre(int genreId);
+     int deleteGenre(int genreId);
 }

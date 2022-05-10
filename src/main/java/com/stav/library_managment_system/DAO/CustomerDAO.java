@@ -7,10 +7,12 @@ public interface CustomerDAO  {
 
     List<Customer> findAll();
 
-
-     Customer isValidCustomer(String email, String password);
+    Customer getByFirstName(String firstName);
 
     Customer getById (int customerId);
+
+    Customer isValidCustomer(String email, String password);
+
 
     int save (Customer customer);
 
@@ -19,6 +21,5 @@ public interface CustomerDAO  {
 
     void  deleteById(int customerId);
 
-    Customer getByFirstName(String firstName);
 }
 

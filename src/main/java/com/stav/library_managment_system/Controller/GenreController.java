@@ -4,11 +4,10 @@ import com.stav.library_managment_system.DAO.GenreDAO;
 import com.stav.library_managment_system.Models.Genre;
 import com.stav.library_managment_system.Exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,10 +24,43 @@ public class GenreController {
     }
 
     @GetMapping ("/{genreId}")
-    public  ResponseEntity<Genre> getGenreById(@PathVariable int genreId) throws ResourceNotFoundException {
-      Genre genre = genreDAO.getById(genreId);
+    public  ResponseEntity<?> getGenreById(@PathVariable int genreId) throws ResourceNotFoundException {
+      Genre genre= null;
+      try {
+          genre = genreDAO.getById(genreId);
+      } catch (DataAccessException e){
+          e.printStackTrace();
+          return  new ResponseEntity<String>("Id not found in the database", HttpStatus.BAD_REQUEST);
+      }
+        return new ResponseEntity<Genre>(genre,HttpStatus.OK);
+    }
+
+    @GetMapping()
+      public ResponseEntity<?> getGenreByName(String ISBN){
         return null;
     }
-}
+
+
+
+
+      @PostMapping()
+       public  ResponseEntity<?> createGenre(@RequestBody Genre genre){
+        int result = genreDAO.createGenre(genre);
+        if (result == -1){
+            return  new ResponseEntity<String>(" Something was wrong ", HttpStatus.BAD_REQUEST);
+        }
+         return  new ResponseEntity<String>(" genre added successfully!",HttpStatus.CREATED);
+      }
+
+
+      @DeleteMapping ("/{genreId}")
+      public  ResponseEntity<?> deleteGenreById(@PathVariable int genreId){
+        int result = genreDAO.deleteGenre(genreId);
+        return  new ResponseEntity<String>("genre deleted successfully!",HttpStatus.OK);
+      }
+
+ }
+
+
 
 

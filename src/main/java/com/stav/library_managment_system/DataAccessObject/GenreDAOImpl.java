@@ -31,8 +31,8 @@ public class GenreDAOImpl implements GenreDAO {
 
     }
     @Override
-    public void deleteGenre(int genreId) {
-        jdbcTemplate.update("DELETE genre WHERE genre_id=?",genreId);
+    public int deleteGenre(int genreId) {
+         return jdbcTemplate.update("DELETE genre WHERE genre_id=?",genreId);
 
     }
 }

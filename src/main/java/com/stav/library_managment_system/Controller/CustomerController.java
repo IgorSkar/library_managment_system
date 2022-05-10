@@ -22,7 +22,6 @@ public class CustomerController {
         return customerDAO.findAll();
 
     }
-
     @GetMapping("/{customerId}")
     public ResponseEntity<?> getCustomerById(@PathVariable int customerId){
         Customer customer = null;
@@ -40,7 +39,7 @@ public class CustomerController {
         try {
             customer = customerDAO.getByFirstName(firstName);
         } catch (DataAccessException e){
-            return  new ResponseEntity<String>(" customer fist_name not found in database" ,HttpStatus.BAD_REQUEST);
+            return  new ResponseEntity<String>(" customer fist_name not found in the  database" ,HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Customer>(customer,HttpStatus.OK);
     }

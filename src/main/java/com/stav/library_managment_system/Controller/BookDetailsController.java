@@ -22,7 +22,6 @@ public class BookDetailsController {
     }
 
 
-
      @GetMapping()
      public  ResponseEntity<?> getBookDetailsByTittle(@RequestParam String title){
          BookDetails bookDetails = null;
@@ -37,7 +36,7 @@ public class BookDetailsController {
 
 
        @GetMapping("/{ISBN}")
-    public ResponseEntity<?> getBookByISBN(@PathVariable String ISBN){
+    public ResponseEntity<?> getBookDetailsByISBN(@PathVariable String ISBN){
         BookDetails bookDetails = null;
         try {
             bookDetails  = bookDetailsDAO.findByISBN(ISBN);
@@ -50,7 +49,7 @@ public class BookDetailsController {
 
 
     @PostMapping()
-    public ResponseEntity<?> createBook(@RequestBody BookDetails bookDetails){
+    public ResponseEntity<?> createBookDetails(@RequestBody BookDetails bookDetails){
         int result = bookDetailsDAO.save(bookDetails);
         if (result == -1){
             return  new ResponseEntity<String>("Something was wrong",HttpStatus.BAD_REQUEST);
@@ -59,7 +58,7 @@ public class BookDetailsController {
     }
       // update funkar inte
     @PutMapping("/{ISBN}")
-    public ResponseEntity<?> updateBook( @RequestBody BookDetails bookDetails, @PathVariable String ISBN) {
+    public ResponseEntity<?> updateBookDetails( @RequestBody BookDetails bookDetails, @PathVariable String ISBN) {
         int result= bookDetailsDAO.update(bookDetails, ISBN);
         return new ResponseEntity<String>("book updated successfully!",HttpStatus.OK);
     }
@@ -68,7 +67,7 @@ public class BookDetailsController {
 
    @DeleteMapping("/{ISBN}")
 
-    public ResponseEntity<?> deleteBookById(@PathVariable String ISBN){
+    public ResponseEntity<?> deleteBookDetailsByISBN(@PathVariable String ISBN){
         int result = bookDetailsDAO.deleteById(ISBN);
         return new ResponseEntity<String>("book deleted successfully!",HttpStatus.OK);
     }

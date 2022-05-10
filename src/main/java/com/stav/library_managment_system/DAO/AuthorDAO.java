@@ -13,7 +13,7 @@ public interface AuthorDAO {
     List<Author> getAllAuthors();
 
 
-    Author getAuthorByName(String name);
+    Author searchAuthorByName(String name);
 
     int save(Author author);
 

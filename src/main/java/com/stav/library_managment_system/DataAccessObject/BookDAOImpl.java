@@ -3,6 +3,7 @@ package com.stav.library_managment_system.DataAccessObject;
 import com.stav.library_managment_system.DAO.BookDAO;
 import com.stav.library_managment_system.Models.Book;
 import com.stav.library_managment_system.Models.BookDetails;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -38,6 +39,7 @@ public class BookDAOImpl implements BookDAO {
 
     @Override
     public int save(String ISBN) {
+        System.out.println(ISBN);
         return  jdbcTemplate.update("INSERT INTO books (isbn) VALUES (?)",ISBN);
     }
 
@@ -59,8 +61,8 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public int ISBNCount() {
-        String sql = "SELECT COUNT(*) FROM BOOKS WHERE ISBN='12345678'";
-        return jdbcTemplate.queryForObject(sql, Integer.class);
+    public int ISBNCount(String ISBN) {
+        String sql = "SELECT COUNT(*) FROM books WHERE isbn=?";
+        return jdbcTemplate.queryForObject(sql, Integer.class,ISBN);
     }
 }

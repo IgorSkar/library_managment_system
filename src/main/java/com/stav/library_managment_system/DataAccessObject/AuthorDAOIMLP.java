@@ -25,9 +25,8 @@ public class AuthorDAOIMLP implements AuthorDAO {
         Author author = jdbcTemplate.queryForObject("SELECT * FROM authors WHERE author_id =?", new BeanPropertyRowMapper<Author>(Author.class), authorId);
         return author;
     }
-
      @Override
-     public Author getAuthorByName(String name) throws DataAccessException{
+     public Author searchAuthorByName(String name) throws DataAccessException{
          Author author = jdbcTemplate.queryForObject("SELECT * FROM authors WHERE name=?", new BeanPropertyRowMapper<Author>(Author.class),name);
          return author;
      }
@@ -37,8 +36,6 @@ public class AuthorDAOIMLP implements AuthorDAO {
         return  jdbcTemplate.update("INSERT INTO authors (name) VALUES (?)",new Object[]{author.getName()});
 
     }
-
-
 
     @Override
     public int update(Author author, int authorId) {

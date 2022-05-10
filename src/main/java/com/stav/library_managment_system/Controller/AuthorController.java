@@ -36,10 +36,10 @@ public class AuthorController {
     }
 
        @GetMapping()
-      public  ResponseEntity<?> getAuthorByName(@RequestParam String name){
+      public  ResponseEntity<?> searchAuthorByName(@RequestParam String name){
          Author  author = null;
          try {
-             author  = authorDAO.getAuthorByName(name);
+             author  = authorDAO.searchAuthorByName(name);
          } catch (DataAccessException e){
              return  new ResponseEntity<String>(" author name not found in database" ,HttpStatus.BAD_REQUEST);
          }
