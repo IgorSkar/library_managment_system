@@ -38,27 +38,28 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 
     public boolean createEmployee(String firstName, String lastName, String username, String password, String role){
-        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_customer");
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_employee");
         Map<String, String> inParams = new HashMap<>();
         inParams.put("first_name", firstName);
         inParams.put("last_name", lastName);
-        inParams.put("user_name", username);
+        inParams.put("username", username);
         inParams.put("password", password);
         inParams.put("role", role);
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
-        return (int) jdbcCall.execute(in).get("succeed") >= 1;
+        Map map = jdbcCall.execute(in);
+        return (int) map.get("succeed") >= 1;
     }
 
     @Override
     public int save(Employee employee) {
-        return jdbcTemplate.update("INSERT INTO employees (first_name,last_name,user_name,password) VALUES (?,?,?,?)",new Object[]{employee.getFirst_name(),employee.getLast_name(),employee.getUser_name(),employee.getPassword()});
+        return jdbcTemplate.update("INSERT INTO employees (first_name,last_name,username,password) VALUES (?,?,?,?)",new Object[]{employee.getFirst_name(),employee.getLast_name(),employee.getUsername(),employee.getPassword()});
     }
 
 
     @Override
     public int update(Employee employee, int employeeId) {
-        return jdbcTemplate.update("UPDATE employees SET user_name=?, password=? WHERE employee_id=?",new Object[] {employee.getUser_name(),employee.getPassword(),employeeId});
+        return jdbcTemplate.update("UPDATE employees SET username=?, password=? WHERE employee_id=?",new Object[] {employee.getUsername(),employee.getPassword(),employeeId});
     }
 
 
@@ -75,10 +76,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 
    @Override
-    public Employee isValidEmployee(String user_name, String password) {
-       String query = "SELECT * FROM employees WHERE user_name =? AND password =?";
+    public Employee isValidEmployee(String username, String password) {
+       String query = "SELECT * FROM employees WHERE username =? AND password =?";
        try {
-           Employee employee = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Employee.class), user_name, password);
+           Employee employee = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Employee.class), username, password);
            return employee;
        }catch(EmptyResultDataAccessException e){
            return null;

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
     private int employee_id;
     private  String first_name;
     private  String last_name;
-    private String user_name;
+    private String username;
     private  String password;
     private String role;
 }

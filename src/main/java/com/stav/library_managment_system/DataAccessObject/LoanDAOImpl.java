@@ -4,6 +4,7 @@ import com.stav.library_managment_system.DAO.LoanDAO;
 import com.stav.library_managment_system.Models.Book;
 import com.stav.library_managment_system.Models.BookDetails;
 import com.stav.library_managment_system.Models.Loan;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -67,9 +68,9 @@ public class LoanDAOImpl implements LoanDAO {
         return loan;
     }
 
-    public int returnBook(int bookId){
+    public boolean returnBook(int bookId){
         String query = "DELETE FROM loans WHERE book_id=?";
-        return jdbcTemplate.update(query, bookId);
+        return jdbcTemplate.update(query, bookId) >= 1;
     }
 
     public boolean loanBook(String isbn, int customerId, int libraryId){
@@ -86,7 +87,27 @@ public class LoanDAOImpl implements LoanDAO {
         inParams.put("return_date", date.format(c.getTime()));
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
-        return (int) jdbcCall.execute(in).get("succeed") >= 1;
+        Map map = jdbcCall.execute(in);
+        System.out.println(map.get("succeed"));
+        return (int) map.get("succeed") >= 1;
+    }
+
+    public List<Loan> getLoanedBooksWithIsbn(String isbn){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_loaned_books_with_isbn")
+                .returningResultSet("return", (rs, rn) -> {
+                    return new Loan(
+                            rs.getInt("book_id"),
+                            rs.getInt("customer_id"),
+                            rs.getString("loan_date"),
+                            rs.getString("return_date")
+                    );
+                });
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("isbn", isbn);
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        Map m = jdbcCall.execute(in);
+        return (List<Loan>) m.get("return");
     }
 
     /**
