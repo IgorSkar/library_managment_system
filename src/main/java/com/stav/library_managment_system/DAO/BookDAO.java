@@ -8,24 +8,21 @@ import java.util.List;
 
 public interface BookDAO {
 
-
     List<Book> getBookList();
-
 
     JSONObject getBookById(int bookId);
 
-
     Book getBookByISBN(String ISBN);
 
-
     int save(String ISBN, int libraryId);
-
 
     int  deleteBook(int bookId);
 
     String getBookWithBookId(int bookId);
 
-     int ISBNCount(String ISBN);
+     int getAmountOfBooks(String ISBN);
+
+    int getAmountOfBooksInStock(String isbn);
 
     List<JSONObject> getAmountOfBookInLibraries(String isbn);
 

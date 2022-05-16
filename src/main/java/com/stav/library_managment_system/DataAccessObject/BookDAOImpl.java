@@ -59,8 +59,6 @@ public class BookDAOImpl implements BookDAO {
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map m = jdbcCall.execute(in);
-        System.out.println(123123);
-        System.out.println(((List<JSONObject>) m.get("return")).get(0) + "12312123");
         return ((List<JSONObject>) m.get("return")).get(0);
     }
 
@@ -93,9 +91,21 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public int ISBNCount(String ISBN) {
+    public int getAmountOfBooks(String ISBN) {
         String sql = "SELECT COUNT(*) FROM books WHERE isbn=?";
         return jdbcTemplate.queryForObject(sql, Integer.class,ISBN);
+    }
+
+    @Override
+    public int getAmountOfBooksInStock(String isbn) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_amount_of_books_in_stock")
+                .returningResultSet("return", (rs, rn) -> rs.getInt("amount"));
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("isbn", isbn);
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        Map map = jdbcCall.execute(in);
+        return ((List<Integer>) map.get("return")).get(0);
     }
 
     public List<JSONObject> getAmountOfBookInLibraries(String isbn){
@@ -114,4 +124,6 @@ public class BookDAOImpl implements BookDAO {
         Map m = jdbcCall.execute(in);
         return (List<JSONObject>) m.get("return");
     }
+
+
 }

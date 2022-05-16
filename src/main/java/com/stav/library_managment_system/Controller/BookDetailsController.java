@@ -2,6 +2,7 @@ package com.stav.library_managment_system.Controller;
 
 import com.stav.library_managment_system.DAO.BookDetailsDAO;
 import com.stav.library_managment_system.Models.BookDetails;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,8 @@ public class BookDetailsController {
     private BookDetailsDAO bookDetailsDAO;
 
     @GetMapping
-    public List<BookDetails> getAllBookDetails(){
-        return bookDetailsDAO.findAll();
+    public String getAllBookDetails(){
+        return bookDetailsDAO.findAll().toString();
     }
 
 
