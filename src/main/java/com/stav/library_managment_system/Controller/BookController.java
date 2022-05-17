@@ -33,18 +33,6 @@ public class BookController {
         return bookDAO.getBookWithBookId(bookId);
     }
 
-      @GetMapping("/ISBN")
-      public ResponseEntity<?> booksAmountWithISBN(@RequestParam String ISBN){
-      int book = 0;
-      try {
-          bookDAO.ISBNCount(ISBN);
-      } catch (DataAccessException e){
-          e.printStackTrace();
-          return  new ResponseEntity<String>(" ISBN not found in the database", HttpStatus.BAD_REQUEST);
-      }
-      return  new ResponseEntity<String>("it was" ,HttpStatus.OK);
-    }
-
     @PostMapping()
     public ResponseEntity<?> createBook(@RequestBody String data) {
         JSONObject object = new JSONObject(data);
@@ -63,12 +51,12 @@ public class BookController {
 
     @GetMapping("amount_with_isbn/{isbn}")
     public int getAmountOfBooks(@PathVariable("isbn") String isbn){
-        return 0;
+        return bookDAO.getAmountOfBooks(isbn);
     }
 
     @GetMapping("amount_in_stock/{isbn}")
     public int getAmountOfBooksInStock(@PathVariable("isbn") String isbn){
-        return 0;
+        return bookDAO.getAmountOfBooksInStock(isbn);
     }
 
     @GetMapping("amount_in_libraries/{isbn}")

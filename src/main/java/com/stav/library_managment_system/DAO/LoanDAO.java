@@ -12,9 +12,11 @@ public interface LoanDAO {
 
     Loan getById( int customerId, int bookId);
 
-    int returnBook(int bookId);
+    boolean returnBook(int bookId);
 
     boolean loanBook(String isbn, int customerId, int libraryId);
+
+    List<Loan> getLoanedBooksWithIsbn(String isbn);
 
      int save (Loan loan);
 

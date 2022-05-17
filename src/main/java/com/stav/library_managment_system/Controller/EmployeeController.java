@@ -45,14 +45,15 @@ public class EmployeeController {
          return new ResponseEntity<Employee>(employee,HttpStatus.OK);
       }
 
-    @GetMapping("/employeeLogin")
-       public Employee isValidEmployee(@RequestParam() String user_name, @RequestParam() String password) {
-        return employeeDAO.isValidEmployee(user_name, password);
+    @GetMapping("login")
+       public Employee isValidEmployee(@RequestParam() String username, @RequestParam() String password) {
+        return employeeDAO.isValidEmployee(username, password);
     }
 
 
-    @GetMapping("/create")
-    public boolean createCustomer(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String username, @RequestParam String password, @RequestParam String role){
+
+    @GetMapping("create")
+    public boolean createEmployee(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String username, @RequestParam String password, @RequestParam String role){
         return employeeDAO.createEmployee(firstName, lastName, username, password, role);
     }
 

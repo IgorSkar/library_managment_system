@@ -45,7 +45,7 @@ public class LoanController {
     }
 
     @GetMapping("return_book/{book_id}")
-    public int returnBook(@PathVariable("book_id") int bookId){
+    public boolean returnBook(@PathVariable("book_id") int bookId){
          return loanDAO.returnBook(bookId);
     }
 
@@ -55,6 +55,10 @@ public class LoanController {
         return loanDAO.loanBook(object.getString("isbn"), object.getInt("customer_id"), object.getInt("library_id"));
     }
 
+    @GetMapping("isbn/{isbn}")
+    public List<Loan> getLoanedBooksWithIsbn(@PathVariable("isbn") String isbn){
+        return loanDAO.getLoanedBooksWithIsbn(isbn);
+    }
 
     @PostMapping()
     public  ResponseEntity<?> createLoan(@RequestBody Loan loan){

@@ -1,6 +1,7 @@
 package com.stav.library_managment_system.DAO;
 
 import com.stav.library_managment_system.Models.BookDetails;
+import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 @Repository
 public interface
 BookDetailsDAO {
-    List<BookDetails> findAll();
+    List<JSONObject> findAll();
 
     BookDetails getBookByTitle(String title);
 

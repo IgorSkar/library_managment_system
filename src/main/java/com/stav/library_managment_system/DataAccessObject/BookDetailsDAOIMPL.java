@@ -8,9 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class BookDetailsDAOIMPL implements BookDetailsDAO {
@@ -20,8 +25,24 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
 
   // funkar inte
     @Override
-    public List<BookDetails> findAll() {
-        return jdbcTemplate.query("SELECT * FROM book_details", new BeanPropertyRowMapper<BookDetails>(BookDetails.class));
+    public List<JSONObject> findAll() {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_books")
+                .returningResultSet("return", (rs, rn) -> {
+                    JSONObject o = new JSONObject();
+                    o.put("isbn", rs.getString("isbn"));
+                    o.put("title", rs.getString("title"));
+                    o.put("description", rs.getString("description"));
+                    o.put("language", rs.getString("language"));
+                    o.put("published", rs.getString("published"));
+                    o.put("image_source", rs.getString("image_source"));
+                    o.put("pages", rs.getInt("pages"));
+                    o.put("authors", rs.getString("authors") == null ? new String[]{} : rs.getString("authors").split(","));
+                    o.put("genres", rs.getString("genres") == null ? new String[]{} : rs.getString("genres").split(","));
+                    System.out.println(o.toString());
+                    return o;
+                });
+        Map m = jdbcCall.execute();
+        return ((List<JSONObject>) m.get("return"));
     }
 
     @Override
