@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/book_details")
+@RequestMapping("/api/book_details")
 public class BookDetailsController {
     @Autowired
     private BookDetailsDAO bookDetailsDAO;
 
     @GetMapping
-    public String getAllBookDetails(){
-        return bookDetailsDAO.findAll().toString();
+    public String getAllBookDetails(@RequestParam String language, @RequestParam String releaseDate, @RequestParam String library, @RequestParam String searchType, @RequestParam String search){
+        return bookDetailsDAO.findAll(language, releaseDate, library, searchType, search).toString();
     }
 
 

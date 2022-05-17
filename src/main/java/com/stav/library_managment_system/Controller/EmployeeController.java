@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/employees")
+@RequestMapping("/api/employees")
 public class EmployeeController {
 
     @Autowired
@@ -34,11 +34,11 @@ public class EmployeeController {
         }
         return  new ResponseEntity<Employee>(employee,HttpStatus.OK);
     }
-    @GetMapping("123")
+    @GetMapping("/firstName")
       public ResponseEntity<?> getEmployeeByName(@RequestParam String firstName){
          Employee employee = null;
          try {
-             employee= employeeDAO.getByFirstName(firstName);
+             employee = employeeDAO.getByFirstName(firstName);
          } catch (DataAccessException e){
              return  new ResponseEntity<String>(" employee fist_name not found in database" ,HttpStatus.BAD_REQUEST);
          }
@@ -49,6 +49,7 @@ public class EmployeeController {
        public Employee isValidEmployee(@RequestParam() String username, @RequestParam() String password) {
         return employeeDAO.isValidEmployee(username, password);
     }
+
 
 
     @GetMapping("create")
