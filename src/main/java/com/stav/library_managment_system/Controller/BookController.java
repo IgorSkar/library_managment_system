@@ -1,10 +1,7 @@
 package com.stav.library_managment_system.Controller;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.stav.library_managment_system.DAO.BookDAO;
 import com.stav.library_managment_system.Models.Book;
-import com.stav.library_managment_system.Models.BookDetails;
-import com.stav.library_managment_system.Exception.ResourceNotFoundException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -15,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/books")
+@RequestMapping("/api/books")
 public class BookController {
     @Autowired
     private BookDAO bookDAO;
@@ -25,7 +22,7 @@ public class BookController {
         return bookDAO.getBookList();
     }
 
-    @GetMapping("/id/{bookId}")
+    @GetMapping("/{bookId}")
     public String getBookById(@PathVariable int bookId) {
         return bookDAO.getBookById(bookId).toString();
     }
@@ -65,6 +62,19 @@ public class BookController {
     @GetMapping("amount_in_libraries/{isbn}")
     public String getAmountOfBookInLibraries(@PathVariable("isbn") String isbn){
         return bookDAO.getAmountOfBookInLibraries(isbn).toString();
+    }
+
+    @GetMapping("/title/ISBN")
+     public ResponseEntity<?> getBookByTitleAndISBN(@RequestParam String title, @RequestParam String ISBN){
+        Book book = null;
+        try {
+            bookDAO.getBookByTitleAndISBN(title, ISBN);
+        } catch (DataAccessException e){
+            e.printStackTrace();
+            return  new ResponseEntity<String>(" ISBN  and  title not found in the database", HttpStatus.BAD_REQUEST);
+        }
+        return  new ResponseEntity<Book>( book,HttpStatus.OK);
+
     }
 }
 
