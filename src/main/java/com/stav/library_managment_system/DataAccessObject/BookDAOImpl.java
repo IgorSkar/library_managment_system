@@ -32,8 +32,7 @@ public class BookDAOImpl implements BookDAO {
 
     @Override
     public List<Book> getBookList() {
-
-        return jdbcTemplate.query("SELECT * FROM books",new BeanPropertyRowMapper<Book>(Book.class));
+        return jdbcTemplate.query("SELECT * FROM books",new BeanPropertyRowMapper<>(Book.class));
     }
 
     @Override
