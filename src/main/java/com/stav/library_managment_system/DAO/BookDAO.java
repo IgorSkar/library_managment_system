@@ -1,7 +1,6 @@
 package com.stav.library_managment_system.DAO;
 
 import com.stav.library_managment_system.Models.Book;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -25,6 +24,8 @@ public interface BookDAO {
     int getAmountOfBooksInStock(String isbn);
 
     List<JSONObject> getAmountOfBookInLibraries(String isbn);
+
+    String getBookByTitleAndISBN(String title, String ISBN);
 
 }
 

@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface
 BookDetailsDAO {
-    List<JSONObject> findAll();
+    List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search);
 
     BookDetails getBookByTitle(String title);
 
