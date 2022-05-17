@@ -3,22 +3,16 @@ package com.stav.library_managment_system.DataAccessObject;
 import com.stav.library_managment_system.DAO.BookDAO;
 import com.stav.library_managment_system.Models.Book;
 import com.stav.library_managment_system.Models.BookDetails;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
-import java.sql.CallableStatement;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,4 +108,11 @@ public class BookDAOImpl implements BookDAO {
         Map m = jdbcCall.execute(in);
         return (List<JSONObject>) m.get("return");
     }
-}
+    @Override
+    public String getBookByTitleAndISBN(String title, String ISBN) {
+        Book book =  jdbcTemplate.queryForObject("SELECT * FROM books WHERE isbn=?", new BeanPropertyRowMapper<Book>(Book.class), ISBN, title);
+        BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE title=?",  new BeanPropertyRowMapper<BookDetails>(BookDetails.class),book.getIsbn());
+         String result = "book" + bookDetails.toString() + "title" + title + "book" + book.toString() + "ISBN" + ISBN;
+          return  result;
+
+}}

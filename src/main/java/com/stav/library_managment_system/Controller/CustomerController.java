@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
-@RequestMapping("api/customers")
+@RequestMapping("/api/customers")
 public class CustomerController {
 
     @Autowired
@@ -32,8 +32,7 @@ public class CustomerController {
         }
         return  new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }
-
-    @GetMapping("123")
+      @GetMapping("/firstName")
     public  ResponseEntity<?> getCustomerByFirstName(@RequestParam String firstName){
         Customer customer= null;
         try {

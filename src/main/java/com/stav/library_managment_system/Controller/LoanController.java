@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/loans")
+@RequestMapping("/api/loans")
 public class LoanController {
     @Autowired
     private LoanDAO loanDAO;
@@ -25,7 +25,7 @@ public class LoanController {
         return loanDAO.getAllLoanList();
     }
 
-    @GetMapping("{customer_id}")
+    @GetMapping("/{customer_id}")
     List<Loan> getLoansByCustomerId(@PathVariable("customer_id") int customerId){
         return loanDAO.getLoansByCustomerId(customerId);
     }
