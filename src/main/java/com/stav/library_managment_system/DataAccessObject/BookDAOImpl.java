@@ -119,8 +119,6 @@ public class BookDAOImpl implements BookDAO {
         return (List<JSONObject>) m.get("return");
     }
 
-
-}
     @Override
     public String getBookByTitleAndISBN(String title, String ISBN) {
         Book book =  jdbcTemplate.queryForObject("SELECT * FROM books WHERE isbn=?", new BeanPropertyRowMapper<Book>(Book.class), ISBN, title);
