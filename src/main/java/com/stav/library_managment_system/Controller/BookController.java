@@ -22,7 +22,7 @@ public class BookController {
         return bookDAO.getBookList();
     }
 
-    @GetMapping("/{bookId}")
+    @GetMapping("/id/{bookId}")
     public String getBookById(@PathVariable int bookId) {
         return bookDAO.getBookById(bookId).toString();
     }
