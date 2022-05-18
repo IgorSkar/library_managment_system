@@ -52,6 +52,7 @@ public class BookDAOImpl implements BookDAO {
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map m = jdbcCall.execute(in);
+
         return ((List<JSONObject>) m.get("return")).get(0);
     }
 
@@ -127,4 +128,5 @@ public class BookDAOImpl implements BookDAO {
          String result = "book" + bookDetails.toString() + "title" + title + "book" + book.toString() + "ISBN" + ISBN;
           return  result;
 
-}}
+    }
+}
