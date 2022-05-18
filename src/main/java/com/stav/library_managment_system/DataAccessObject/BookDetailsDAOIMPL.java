@@ -13,9 +13,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class BookDetailsDAOIMPL implements BookDetailsDAO {
@@ -23,9 +24,8 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-  // funkar inte
     @Override
-    public List<JSONObject> findAll() {
+    public List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_books")
                 .returningResultSet("return", (rs, rn) -> {
                     JSONObject o = new JSONObject();
@@ -38,11 +38,34 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
                     o.put("pages", rs.getInt("pages"));
                     o.put("authors", rs.getString("authors") == null ? new String[]{} : rs.getString("authors").split(","));
                     o.put("genres", rs.getString("genres") == null ? new String[]{} : rs.getString("genres").split(","));
-                    System.out.println(o.toString());
+                    o.put("available_libraries", rs.getString("available_libraries") == null ? new String[]{} : rs.getString("available_libraries").split(","));
                     return o;
                 });
-        Map m = jdbcCall.execute();
-        return ((List<JSONObject>) m.get("return"));
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("language", language);
+        inParams.put("releaseDate", releaseDate);
+        inParams.put("library", library);
+        inParams.put("searchType", searchType);
+        inParams.put("search", search);
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        Map m = jdbcCall.execute(in);
+        //filtering by search terms
+        List<JSONObject> books = ((List<JSONObject>) m.get("return")).stream().filter(o -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                return
+                        (!language.equalsIgnoreCase("") ? o.getString("language").equalsIgnoreCase(language) : true) &&
+                        (!releaseDate.equalsIgnoreCase("") ? !sdf.parse(o.getString("published")).before(sdf.parse(releaseDate)) : true) &&
+                        (!library.equalsIgnoreCase("") ? Arrays.stream((String[]) o.get("available_libraries")).anyMatch(s -> s.toLowerCase().contains(library.toLowerCase())) : true) &&
+                        (searchType.equalsIgnoreCase("titel") ? o.getString("title").toLowerCase().contains(search.toLowerCase()) : true) &&
+                        (searchType.equalsIgnoreCase("författare") ? Arrays.stream((String[]) o.get("authors")).anyMatch(s -> s.toLowerCase().contains(search.toLowerCase())) : true);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }).toList();
+        //
+        return books;
     }
 
     @Override

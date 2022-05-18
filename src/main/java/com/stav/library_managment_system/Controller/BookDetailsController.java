@@ -18,8 +18,8 @@ public class BookDetailsController {
     private BookDetailsDAO bookDetailsDAO;
 
     @GetMapping
-    public String getAllBookDetails(){
-        return bookDetailsDAO.findAll().toString();
+    public String getAllBookDetails(@RequestParam String language, @RequestParam String releaseDate, @RequestParam String library, @RequestParam String searchType, @RequestParam String search){
+        return bookDetailsDAO.findAll(language, releaseDate, library, searchType, search).toString();
     }
 
 
