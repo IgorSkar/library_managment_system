@@ -6,9 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.lang.System.in;
 
 @Repository
 public class BookingRoomDAOImpl implements  BookingRoomDAO {
@@ -29,8 +36,21 @@ public class BookingRoomDAOImpl implements  BookingRoomDAO {
     }
 
     @Override
+    public boolean create_customers_with_group_rooms(int room_id, int customer_id, String time) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_customers_with_group_rooms");
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("room_id", String.valueOf(room_id));
+        inParams.put("customer_id", String.valueOf(customer_id));
+        inParams.put("time",String.valueOf(time));
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        return (int) jdbcCall.execute(in).get("succeed") >= 1;
+
+    }
+
+
+    @Override
     public int create(BookingRoom bookingRoom) {
-        return jdbcTemplate.update("INSERT INTO customers_with_group_rooms (room_id,customer_id )VALUES (?,?)",new Object[]{bookingRoom.getRoom_id(),bookingRoom.getCustomer_id()});
+        return jdbcTemplate.update("INSERT INTO customers_with_group_rooms (room_id,customer_id ,time)VALUES (?,?;?)",new Object[]{bookingRoom.getRoom_id(),bookingRoom.getCustomer_id(),bookingRoom.getTime()});
     }
 
     @Override

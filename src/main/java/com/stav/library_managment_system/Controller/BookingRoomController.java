@@ -40,6 +40,7 @@ public class BookingRoomController {
        }
 
 
+
     @PostMapping()
     public  ResponseEntity<?>  createBookingRooms(@RequestBody BookingRoom bookingRoom){
         int add = bookingRoomDAO.create(bookingRoom);
@@ -47,6 +48,11 @@ public class BookingRoomController {
             return  new ResponseEntity<String>("Something was wrong",HttpStatus.BAD_REQUEST);
         }
         return  new ResponseEntity<String>(" Booking added successfully!",HttpStatus.CREATED);
+    }
+
+     @PostMapping("/create")
+    public boolean create_customers_with_group_rooms(@RequestParam int room_id , @RequestParam int customer_id,String time){
+        return bookingRoomDAO.create_customers_with_group_rooms(room_id,customer_id,time);
     }
 
     @DeleteMapping("/{customer_id}/{room_id}")

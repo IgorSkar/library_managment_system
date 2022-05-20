@@ -17,4 +17,17 @@ public interface Book_QueueDAO {
 
 
       int deleteBook_QueueByCustomerId(int customerId);
+
+
+
+     int isInQueue(String ISBN, int customerId);
+
+
+
+    boolean reserveBook(String ISBN, int customerId);
+
+
+     int getAmountInQueue(String ISBN);
+
+     List<Book_Queue> getReservedBoks(int customerId);
 }
