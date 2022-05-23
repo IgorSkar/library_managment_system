@@ -20,8 +20,8 @@ public class CustomerController {
     public List<Customer> findAll() {
 
         return customerDAO.findAll();
-
     }
+
     @GetMapping("/{customerId}")
     public ResponseEntity<?> getCustomerById(@PathVariable int customerId){
         Customer customer = null;

@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 @Repository
 public class Book_QueueDAOImpl implements Book_QueueDAO {
@@ -32,13 +34,38 @@ public class Book_QueueDAOImpl implements Book_QueueDAO {
 
     @Override
     public int create(Book_Queue book_queue) {
-        return jdbcTemplate.update("INSERT INTO book_queue (queue_date,book_id,customer_id)VALUES (?,?,?)", new Object []{book_queue.getQueue_date(),book_queue.getBook_id(),book_queue.getCustomer_id()});
+        return jdbcTemplate.update("INSERT INTO book_queue (queue_date,isbn,customer_id)VALUES (?,?,?)", new Object []{book_queue.getQueue_date(),book_queue.getIsbn(),book_queue.getCustomer_id()});
     }
 
     @Override
     public int deleteBook_QueueByCustomerId(int customerId) {
         jdbcTemplate.update("DELETE FROM book_queue WHERE customer_id=?",customerId);
         return customerId;
+    }
+
+    @Override
+    public int isInQueue(String ISBN, int customerId) {
+      String query = "SELECT CASE WHERE EXISTS (SELECT * FROM book_queue WHERE isbn=? AND customer_id=?)THEN CAST(1 AS BIT) AS TRUE ELSE CAST(0 AS BIT ) AS FALSE END";
+      return jdbcTemplate.update(query);
+    }
+
+    @Override
+    public boolean reserveBook(String ISBN, int customerId) {
+        int book_queue = jdbcTemplate.update("INSERT INTO book_queue (isbn,customer_id)VALUES (?,?)", new Object []{});
+        Date date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+         return true;
+    }
+
+    @Override
+    public int getAmountInQueue(String ISBN) {
+     return jdbcTemplate.queryForObject("SELECT COUNT(isbn) From book_queue WHERE isbn=?" , Integer.class,ISBN);
+
+    }
+
+    @Override
+    public List<Book_Queue> getReservedBoks(int customerId) {
+        return jdbcTemplate.query("SELECT * FROM book_queue WHERE customer_id=? ",new BeanPropertyRowMapper<Book_Queue>(Book_Queue.class), customerId);
     }
 }
 
