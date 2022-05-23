@@ -55,7 +55,7 @@ public class BookingRoomController {
 
     @GetMapping("/availableGroupRooms")
     public String get_available_group_rooms(){
-        return bookingRoomDAO.get_available_group_rooms().toString();
+           return bookingRoomDAO.get_available_group_rooms().toString();
     }
 
     @DeleteMapping("/{customer_id}/{room_id}")
