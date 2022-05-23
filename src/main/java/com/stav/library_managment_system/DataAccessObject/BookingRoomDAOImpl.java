@@ -2,13 +2,22 @@ package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.BookingRoomDAO;
 import com.stav.library_managment_system.Models.BookingRoom;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+import org.springframework.jmx.export.metadata.ManagedOperation;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.lang.System.in;
 
 @Repository
 public class BookingRoomDAOImpl implements  BookingRoomDAO {
@@ -29,8 +38,47 @@ public class BookingRoomDAOImpl implements  BookingRoomDAO {
     }
 
     @Override
-    public int create(BookingRoom bookingRoom) {
-        return jdbcTemplate.update("INSERT INTO customers_with_group_rooms (room_id,customer_id )VALUES (?,?)",new Object[]{bookingRoom.getRoom_id(),bookingRoom.getCustomer_id()});
+    public List<JSONObject> get_customers_with_group_rooms() {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_customers_with_group_rooms")
+                .returningResultSet("return", (rs, rn) -> {
+                    JSONObject o = new JSONObject();
+                    o.put("FirstName", rs.getString("FirstName"));
+                    o.put("LastName", rs.getString("LastName"));
+                    o.put("Time", rs.getString("Time"));
+                    o.put("Booking", rs.getString("Booking"));
+                    o.put("Room", rs.getString("Room"));
+                    o.put("Library", rs.getString("Library"));
+                    return o;
+                });
+        Map m = jdbcCall.execute(new HashMap<String, String>(0));
+        return (List<JSONObject>) m.get("return");
+    }
+
+
+    @Override
+    public boolean createBooking(int time_id, int customer_id) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_customers_with_group_rooms");
+        Map<String, Integer> inParams = new HashMap<>();
+        inParams.put("time_id", time_id);
+        inParams.put("customer_id", customer_id);
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        return (int) jdbcCall.execute(in).get("succeed") >= 1;
+    }
+
+    @Override
+    public List<BookingRoom> get_available_group_rooms() {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_available_group_rooms")
+                .returningResultSet("return", (rs, rn) -> {
+                    JSONObject o = new JSONObject();
+                    o.put("Room", rs.getString("Room"));
+                    o.put("Time", rs.getString("Time"));
+                    o.put("Date", rs.getString("Date"));
+                    o.put("Library", rs.getString("Library"));
+                    return o;
+                });
+        Map m = jdbcCall.execute(new HashMap<String, Object>(0));
+        return (List<BookingRoom>) m.get("return");
     }
 
     @Override

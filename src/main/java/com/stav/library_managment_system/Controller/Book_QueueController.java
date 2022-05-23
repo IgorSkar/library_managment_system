@@ -24,6 +24,12 @@ public class Book_QueueController {
 
 
     @GetMapping("/{customerId}")
+    public List<Book_Queue> getReservedBooks(@PathVariable int customerId){
+        return book_queueDAO.getReservedBoks(customerId);
+    }
+
+
+    @GetMapping("/customers/{customerId}")
     public ResponseEntity<?> getBook_QueueByCustomerId(@PathVariable int customerId){
           Book_Queue book_queue = null;
         System.out.println("customer with id" + customerId);
@@ -36,6 +42,21 @@ public class Book_QueueController {
             return  new ResponseEntity<Book_Queue>(book_queue,HttpStatus.OK);
     }
 
+    @GetMapping("/ISBN/{customerId}")
+    public  boolean reserveBook(@RequestParam String ISBN, @RequestParam int customerId){
+        return book_queueDAO.reserveBook(ISBN,customerId);
+    }
+
+      @GetMapping("/ISBN")
+      public int getAmountInQueue(@RequestParam String ISBN){
+        return book_queueDAO.getAmountInQueue(ISBN);
+      }
+
+
+      @GetMapping("/reserv/ISBN/{customerId}")
+      public int isInQueue(@RequestParam String ISBN, @RequestParam int customerId){
+        return book_queueDAO.isInQueue(ISBN,customerId);
+      }
 
       @PostMapping()
 

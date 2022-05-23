@@ -2,6 +2,8 @@ package com.stav.library_managment_system.Controller;
 
 import com.stav.library_managment_system.DAO.BookingRoomDAO;
 import com.stav.library_managment_system.Models.BookingRoom;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +42,20 @@ public class BookingRoomController {
        }
 
 
-    @PostMapping()
-    public  ResponseEntity<?>  createBookingRooms(@RequestBody BookingRoom bookingRoom){
-        int add = bookingRoomDAO.create(bookingRoom);
-        if(add == -1){
-            return  new ResponseEntity<String>("Something was wrong",HttpStatus.BAD_REQUEST);
-        }
-        return  new ResponseEntity<String>(" Booking added successfully!",HttpStatus.CREATED);
+
+    @PostMapping("/{time_id}/{customer_id}")
+    public boolean createBookingRooms(@PathVariable int time_id, @PathVariable int customer_id) {
+         return bookingRoomDAO.createBooking(time_id, customer_id);
+    }
+
+     @GetMapping("/getBookings")
+    public String get_customers_with_group_rooms(){
+        return bookingRoomDAO.get_customers_with_group_rooms().toString();
+    }
+
+    @GetMapping("/availableGroupRooms")
+    public String get_available_group_rooms(){
+        return bookingRoomDAO.get_available_group_rooms().toString();
     }
 
     @DeleteMapping("/{customer_id}/{room_id}")

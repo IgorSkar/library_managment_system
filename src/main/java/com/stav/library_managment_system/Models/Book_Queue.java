@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Book_Queue {
 
-    private int book_id;
+    private String isbn;
     private int customer_id;
     private String queue_date;
 

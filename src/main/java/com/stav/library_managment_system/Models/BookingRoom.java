@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class BookingRoom {
     private int room_id;
     private int customer_id;
+    private String time;
 }
