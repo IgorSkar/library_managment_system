@@ -9,6 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 @Repository
@@ -38,23 +41,24 @@ public class Book_QueueDAOImpl implements Book_QueueDAO {
     }
 
     @Override
-    public int deleteBook_QueueByCustomerId(int customerId) {
-        jdbcTemplate.update("DELETE FROM book_queue WHERE customer_id=?",customerId);
+    public int deleteBook_QueueByCustomerId(String isbn, int customerId) {
+        jdbcTemplate.update("DELETE FROM book_queue WHERE isbn = ? AND customer_id=?",isbn,customerId);
         return customerId;
     }
 
     @Override
-    public int isInQueue(String ISBN, int customerId) {
-      String query = "SELECT CASE WHERE EXISTS (SELECT * FROM book_queue WHERE isbn=? AND customer_id=?)THEN CAST(1 AS BIT) AS TRUE ELSE CAST(0 AS BIT ) AS FALSE END";
-      return jdbcTemplate.update(query);
+    public boolean isInQueue(String isbn, int customerId) {
+      String query = "SELECT COUNT(*) FROM book_queue WHERE isbn = ? AND customer_id = ?";
+      return jdbcTemplate.queryForObject(query, Integer.class, isbn, customerId) >= 1;
     }
 
     @Override
-    public boolean reserveBook(String ISBN, int customerId) {
-        int book_queue = jdbcTemplate.update("INSERT INTO book_queue (isbn,customer_id)VALUES (?,?)", new Object []{});
-        Date date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-         return true;
+    public boolean reserveBook(String isbn, int customerId) {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String time = sdf.format(c.getTime());
+        int book_queue = jdbcTemplate.update("INSERT INTO book_queue (queue_date,isbn,customer_id)VALUES (?,?,?)", time, isbn, customerId);
+        return book_queue >= 1;
     }
 
     @Override
@@ -64,7 +68,7 @@ public class Book_QueueDAOImpl implements Book_QueueDAO {
     }
 
     @Override
-    public List<Book_Queue> getReservedBoks(int customerId) {
+    public List<Book_Queue> getReservedBooks(int customerId) {
         return jdbcTemplate.query("SELECT * FROM book_queue WHERE customer_id=? ",new BeanPropertyRowMapper<Book_Queue>(Book_Queue.class), customerId);
     }
 }
