@@ -18,7 +18,7 @@ public class LocalsController {
 
     @GetMapping("/all")
     public List<group_rooms> getAllLocals(){
-        return  group_roomsDAO.getAllGroupRooms();
+        return group_roomsDAO.getAllGroupRooms();
     }
 
     @GetMapping("/{room_id}")

@@ -18,11 +18,11 @@ public class BookingRoomController {
     @Autowired
     private BookingRoomDAO bookingRoomDAO;
 
+    /*
     @GetMapping("/all")
     public List<BookingRoom> getAllGroup_rooms(){
         return bookingRoomDAO.getAllGroupRooms();
     }
-/*
     @GetMapping("/{customer_id}")
     public ResponseEntity<?> getGroupRoomsByCustomerId(@PathVariable int customer_id) {
         BookingRoom bookingRoom = null;
@@ -33,8 +33,7 @@ public class BookingRoomController {
             return new ResponseEntity<String>("oops: customer id not found in the database", HttpStatus.BAD_REQUEST);
         } return  new ResponseEntity<BookingRoom>(bookingRoom,HttpStatus.OK);
     }
-
- */
+      */
 
        @GetMapping("/{customer_id}")
        public List<BookingRoom> getAllBookingByCustomerId(@PathVariable int customer_id){

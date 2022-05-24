@@ -17,7 +17,10 @@ public class GroupRoomTimesDAOIMPL implements GroupRoomTimesDAO {
 
     @Override
     public List<GroupRoomTimes> groupRoomTimes() {
+        String result = jdbcTemplate.query("SELECT * FROM library_management_system.group_room_times;", new BeanPropertyRowMapper<GroupRoomTimes>(GroupRoomTimes.class)).toString();
+        System.out.println("Result schoo: " + result); // We can conclude that 'time_id' doesn't appear... WTF??
         return jdbcTemplate.query("SELECT * FROM group_room_times", new BeanPropertyRowMapper<GroupRoomTimes>(GroupRoomTimes.class));
+
     }
 
     @Override

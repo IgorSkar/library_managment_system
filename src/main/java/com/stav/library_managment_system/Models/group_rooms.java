@@ -11,4 +11,5 @@ public class group_rooms {
     private int room_id;
     private  int library_id;
     private String name;
+    private String description;
 }

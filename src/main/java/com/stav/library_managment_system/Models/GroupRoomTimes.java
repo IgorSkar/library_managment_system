@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupRoomTimes {
+    private int time_id;
     private int room_id;
     private String time;
     private String date;

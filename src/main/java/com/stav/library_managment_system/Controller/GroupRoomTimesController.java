@@ -21,6 +21,7 @@ public class GroupRoomTimesController {
     public List<GroupRoomTimes> groupRoomTimes(){
         return groupRoomTimesDAO.groupRoomTimes();
     }
+
     //Does not work, will fix later
     @PostMapping()
     public void create(GroupRoomTimes groupRoomTimes){
