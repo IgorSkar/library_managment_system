@@ -1,14 +1,20 @@
 package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.GroupRoomTimesDAO;
-import com.stav.library_managment_system.Models.GroupRoomTimes;
-import com.stav.library_managment_system.Models.group_rooms;
+import com.stav.library_managment_system.Models.GroupRoomTime;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class GroupRoomTimesDAOIMPL implements GroupRoomTimesDAO {
@@ -16,15 +22,36 @@ public class GroupRoomTimesDAOIMPL implements GroupRoomTimesDAO {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<GroupRoomTimes> groupRoomTimes() {
-        String result = jdbcTemplate.query("SELECT * FROM library_management_system.group_room_times;", new BeanPropertyRowMapper<GroupRoomTimes>(GroupRoomTimes.class)).toString();
+    public List<GroupRoomTime> groupRoomTimes() {
+        String result = jdbcTemplate.query("SELECT * FROM library_management_system.group_room_times;", new BeanPropertyRowMapper<GroupRoomTime>(GroupRoomTime.class)).toString();
         System.out.println("Result schoo: " + result); // We can conclude that 'time_id' doesn't appear... WTF??
-        return jdbcTemplate.query("SELECT * FROM group_room_times", new BeanPropertyRowMapper<GroupRoomTimes>(GroupRoomTimes.class));
+        return jdbcTemplate.query("SELECT * FROM group_room_times", new BeanPropertyRowMapper<GroupRoomTime>(GroupRoomTime.class));
 
     }
 
     @Override
-    public void create(GroupRoomTimes groupRoomTimes) {
-        jdbcTemplate.update("INSERT INTO group_room_times(room_id,time,date) VALUES(?,?,?)", new Object[] {groupRoomTimes.getRoom_id(), groupRoomTimes.getTime(), groupRoomTimes.getDate()});
+    public void create(GroupRoomTime groupRoomTime) {
+        jdbcTemplate.update("INSERT INTO group_room_times(room_id,time,date) VALUES(?,?,?)", new Object[] {groupRoomTime.getRoom_id(), groupRoomTime.getTime(), groupRoomTime.getDate()});
+    }
+
+    @Override
+    public List<JSONObject> groupRoomTimesById(int customer_id) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_customer_room_bookings").returningResultSet("return", (rs,rn ) -> {
+            JSONObject object = new JSONObject();
+            object.put("time_id", rs.getInt("time_id"));
+            object.put("room_id", rs.getInt("room_id"));
+            object.put("time", rs.getString("time"));
+            object.put("date", rs.getString("date"));
+            object.put("name", rs.getString("name"));
+
+            return object;
+        });
+
+        Map<String, Integer> inParams = new HashMap<>();
+        inParams.put("customer_id_frontend", customer_id);
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        System.out.println("Database result, this is sent to Frontend: " + jdbcCall.execute(in).get("return").toString());
+        return (ArrayList<JSONObject>) jdbcCall.execute(in).get("return"); // Let me be yellow
     }
 }
