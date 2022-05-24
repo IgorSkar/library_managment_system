@@ -1,13 +1,17 @@
 package com.stav.library_managment_system.DAO;
 
-import com.stav.library_managment_system.Models.GroupRoomTimes;
+import com.stav.library_managment_system.Models.GroupRoomTime;
 
 import java.util.List;
 
 public interface GroupRoomTimesDAO {
 
-    List<GroupRoomTimes> groupRoomTimes();
+    List<GroupRoomTime> groupRoomTimes();
 
-    void create(GroupRoomTimes groupRoomTimes);
+    List<GroupRoomTime> getAvailableTimesById(int roomId);
+
+    boolean book(int timeId, int customerId);
+
+    void create(GroupRoomTime groupRoomTime);
 
 }
