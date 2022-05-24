@@ -17,4 +17,6 @@ public interface GroupRoomTimesDAO {
     void create(GroupRoomTime groupRoomTime);
 
     List<JSONObject> groupRoomTimesById(int customer_id);
+
+    boolean unbook(int timeId, int customerId);
 }

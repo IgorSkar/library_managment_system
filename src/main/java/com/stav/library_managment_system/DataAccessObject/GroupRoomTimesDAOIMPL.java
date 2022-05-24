@@ -77,4 +77,9 @@ public class GroupRoomTimesDAOIMPL implements GroupRoomTimesDAO {
         System.out.println("Database result, this is sent to Frontend: " + jdbcCall.execute(in).get("return").toString());
         return (ArrayList<JSONObject>) jdbcCall.execute(in).get("return"); // Let me be yellow
     }
+
+    public boolean unbook(int timeId, int customerId){
+        return jdbcTemplate.update("DELETE FROM customers_with_group_rooms WHERE time_id = ? AND customer_id = ?", timeId, customerId) >= 1;
+    }
+
 }

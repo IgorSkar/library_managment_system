@@ -40,4 +40,9 @@ public class GroupRoomTimesController {
     public String groupRoomTimesById(@PathVariable int customerId) {
         return groupRoomTimesDAO.groupRoomTimesById(customerId).toString();
     }
+
+    @GetMapping("/unbook")
+    public boolean unbook(@RequestParam("timeId") int timeId, @RequestParam("customerId") int customerId){
+        return groupRoomTimesDAO.unbook(timeId, customerId);
+    }
 }
