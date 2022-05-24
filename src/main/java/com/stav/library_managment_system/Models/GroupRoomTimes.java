@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class group_rooms {
+public class GroupRoomTimes {
+    private int time_id;
     private int room_id;
-    private  int library_id;
-    private String name;
-    private String description;
+    private String time;
+    private String date;
 }

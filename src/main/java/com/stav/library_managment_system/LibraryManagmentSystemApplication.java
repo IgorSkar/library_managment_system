@@ -2,6 +2,7 @@ package com.stav.library_managment_system;
 
 
 
+import com.stav.library_managment_system.Models.group_rooms;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
