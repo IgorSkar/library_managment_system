@@ -23,7 +23,7 @@ public class Book_QueueController {
     }
 
 
-    @GetMapping("/{customerId}")
+    @GetMapping("/customer/{customerId}")
     public List<Book_Queue> getReservedBooks(@PathVariable int customerId){
         return book_queueDAO.getReservedBoks(customerId);
     }
@@ -42,9 +42,9 @@ public class Book_QueueController {
             return  new ResponseEntity<Book_Queue>(book_queue,HttpStatus.OK);
     }
 
-    @GetMapping("/ISBN/{customerId}")
-    public  boolean reserveBook(@RequestParam String ISBN, @RequestParam int customerId){
-        return book_queueDAO.reserveBook(ISBN,customerId);
+    @GetMapping("/reserve")
+    public  boolean reserveBook(@RequestParam String isbn, @RequestParam int customerId){
+        return book_queueDAO.reserveBook(isbn,customerId);
     }
 
       @GetMapping("/ISBN")
