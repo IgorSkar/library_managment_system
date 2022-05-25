@@ -14,5 +14,7 @@ public class Library {
     private int libraryId;
     @JsonProperty("name")
     private String name;
+    private String address;
+    private String county;
 
 }
