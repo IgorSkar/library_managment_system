@@ -1,6 +1,7 @@
 package com.stav.library_managment_system.Controller;
 
 import com.stav.library_managment_system.DAO.group_roomsDAO;
+import com.stav.library_managment_system.Models.GroupRoomTime;
 import com.stav.library_managment_system.Models.group_rooms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -18,7 +19,7 @@ public class LocalsController {
 
     @GetMapping("/all")
     public List<group_rooms> getAllLocals(){
-        return  group_roomsDAO.getAllGroupRooms();
+        return group_roomsDAO.getAllGroupRooms();
     }
 
     @GetMapping("/{room_id}")

@@ -13,7 +13,7 @@ BookDetailsDAO {
 
     BookDetails getBookByTitle(String title);
 
-    BookDetails findByISBN(String ISBN);
+    JSONObject findByISBN(String ISBN);
 
     int save(BookDetails bookDetailsId);
 

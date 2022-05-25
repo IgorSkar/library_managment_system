@@ -36,16 +36,9 @@ public class BookDetailsController {
      }
 
 
-       @GetMapping("/{ISBN}")
-    public ResponseEntity<?> getBookDetailsByISBN(@PathVariable String ISBN){
-        BookDetails bookDetails = null;
-        try {
-            bookDetails  = bookDetailsDAO.findByISBN(ISBN);
-        } catch (DataAccessException e){
-            e.printStackTrace();
-            return  new ResponseEntity<String>("ISBN not found", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<BookDetails>(bookDetails,HttpStatus.OK);
+       @GetMapping("/{isbn}")
+    public String getBookDetailsByISBN(@PathVariable("isbn") String isbn){
+        return bookDetailsDAO.findByISBN(isbn).toString();
     }
 
 

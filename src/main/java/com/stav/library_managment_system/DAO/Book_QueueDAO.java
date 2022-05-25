@@ -16,11 +16,11 @@ public interface Book_QueueDAO {
        int create (Book_Queue book_queue);
 
 
-      int deleteBook_QueueByCustomerId(int customerId);
+      int deleteBook_QueueByCustomerId(String isbn, int customerId);
 
 
 
-     int isInQueue(String ISBN, int customerId);
+     boolean isInQueue(String ISBN, int customerId);
 
 
 
@@ -29,5 +29,5 @@ public interface Book_QueueDAO {
 
      int getAmountInQueue(String ISBN);
 
-     List<Book_Queue> getReservedBoks(int customerId);
+     List<Book_Queue> getReservedBooks(int customerId);
 }

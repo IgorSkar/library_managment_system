@@ -26,7 +26,7 @@ public class BookDAOImpl implements BookDAO {
 
     @Override
     public List<Book> getBookList() {
-        return jdbcTemplate.query("SELECT * FROM books",new BeanPropertyRowMapper<>(Book.class));
+        return jdbcTemplate.query("SELECT * FROM books", new BeanPropertyRowMapper<>(Book.class));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class BookDAOImpl implements BookDAO {
                     return o;
                 });
         Map<String, String> inParams = new HashMap<>();
-        inParams.put("bookId", bookId+"");
+        inParams.put("bookId", bookId + "");
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map m = jdbcCall.execute(in);
@@ -57,16 +57,16 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public Book getBookByISBN(String ISBN)  throws  DataAccessException{
+    public Book getBookByISBN(String ISBN) throws DataAccessException {
 
-        Book book= jdbcTemplate.queryForObject("select * from books WHERE isbn=?",new BeanPropertyRowMapper<Book>(Book.class),ISBN);
+        Book book = jdbcTemplate.queryForObject("select * from books WHERE isbn=?", new BeanPropertyRowMapper<Book>(Book.class), ISBN);
         return book;
     }
 
     @Override
     public int save(String ISBN, int libraryId) {
         System.out.println(ISBN);
-        return  jdbcTemplate.update("INSERT INTO books (isbn, library_id) VALUES (?,?)",ISBN, libraryId);
+        return jdbcTemplate.update("INSERT INTO books (isbn, library_id) VALUES (?,?)", ISBN, libraryId);
     }
 
     @Override
@@ -77,9 +77,9 @@ public class BookDAOImpl implements BookDAO {
 
     @Override
     public String getBookWithBookId(int bookId) {
-        Book book = jdbcTemplate.queryForObject("SELECT * FROM books WHERE book_id=?",new BeanPropertyRowMapper<Book>(Book.class),bookId);
-        BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE isbn=?", new BeanPropertyRowMapper<BookDetails>(BookDetails.class),book.getIsbn());
-        String result = "book" + bookDetails.toString() +  "BookId " + bookId;
+        Book book = jdbcTemplate.queryForObject("SELECT * FROM books WHERE book_id=?", new BeanPropertyRowMapper<Book>(Book.class), bookId);
+        BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE isbn=?", new BeanPropertyRowMapper<BookDetails>(BookDetails.class), book.getIsbn());
+        String result = "book" + bookDetails.toString() + "BookId " + bookId;
 
         return result;
     }
@@ -87,7 +87,7 @@ public class BookDAOImpl implements BookDAO {
     @Override
     public int getAmountOfBooks(String ISBN) {
         String sql = "SELECT COUNT(*) FROM books WHERE isbn=?";
-        return jdbcTemplate.queryForObject(sql, Integer.class,ISBN);
+        return jdbcTemplate.queryForObject(sql, Integer.class, ISBN);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class BookDAOImpl implements BookDAO {
         return ((List<Integer>) map.get("return")).get(0);
     }
 
-    public List<JSONObject> getAmountOfBookInLibraries(String isbn){
+    public List<JSONObject> getAmountOfBookInLibraries(String isbn) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("available_amount_of_book_in_libraries")
                 .returningResultSet("return", (rs, rn) -> {
                     JSONObject object = new JSONObject();
@@ -123,10 +123,12 @@ public class BookDAOImpl implements BookDAO {
 
     @Override
     public String getBookByTitleAndISBN(String title, String ISBN) {
-        Book book =  jdbcTemplate.queryForObject("SELECT * FROM books WHERE isbn=?", new BeanPropertyRowMapper<Book>(Book.class), ISBN, title);
-        BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE title=?",  new BeanPropertyRowMapper<BookDetails>(BookDetails.class),book.getIsbn());
-         String result = "book" + bookDetails.toString() + "title" + title + "book" + book.toString() + "ISBN" + ISBN;
-          return  result;
+        Book book = jdbcTemplate.queryForObject("SELECT * FROM books WHERE isbn=?", new BeanPropertyRowMapper<Book>(Book.class), ISBN, title);
+        BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE title=?", new BeanPropertyRowMapper<BookDetails>(BookDetails.class), book.getIsbn());
+        String result = "book" + bookDetails.toString() + "title" + title + "book" + book.toString() + "ISBN" + ISBN;
+        return result;
 
     }
+
 }
+
