@@ -24,7 +24,7 @@ public interface Book_QueueDAO {
 
 
 
-    boolean reserveBook(String ISBN, int customerId);
+    int  reserveBook(String ISBN, int customerId);
 
 
      int getAmountInQueue(String ISBN);

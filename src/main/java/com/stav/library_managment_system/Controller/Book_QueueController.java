@@ -43,7 +43,7 @@ public class Book_QueueController {
     }
 
     @GetMapping("/ISBN/{customerId}")
-    public  boolean reserveBook(@RequestParam String ISBN, @RequestParam int customerId){
+    public int reserveBook(@RequestParam String ISBN, @RequestParam int customerId){
         return book_queueDAO.reserveBook(ISBN,customerId);
     }
 
