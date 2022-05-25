@@ -66,6 +66,8 @@ public class BookingRoomDAOImpl implements  BookingRoomDAO {
         return (int) jdbcCall.execute(in).get("succeed") >= 1;
     }
 
+
+    /*
     @Override
     public List<BookingRoom> get_available_group_rooms() {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_available_group_rooms")
@@ -80,6 +82,25 @@ public class BookingRoomDAOImpl implements  BookingRoomDAO {
         Map m = jdbcCall.execute(new HashMap<String, Object>(0));
         return (List<BookingRoom>) m.get("return");
     }
+    */
+
+    @Override
+    public List<BookingRoom> get_available_group_rooms() {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_available_group_rooms")
+                .returningResultSet("return", (rs, rn) -> {
+                    JSONObject o = new JSONObject();
+                    o.put("room_id", rs.getInt("room_id"));
+                    o.put("name", rs.getString("name"));
+                    o.put("library_id", rs.getInt("library_id"));
+                    return o;
+                });
+        Map m = jdbcCall.execute(new HashMap<String, Object>(0));
+
+        System.out.println(m);
+
+        return (List<BookingRoom>) m.get("return");
+    }
+
 
     @Override
     public BookingRoom getGroupRoomByCustomerId(int customer_id) throws DataAccessException {

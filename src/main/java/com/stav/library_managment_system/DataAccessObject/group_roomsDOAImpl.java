@@ -18,7 +18,9 @@ public class group_roomsDOAImpl implements group_roomsDAO {
 
     @Override
     public List<group_rooms> getAllGroupRooms() {
-        return jdbcTemplate.query("SELECT * FROM group_rooms",new BeanPropertyRowMapper<group_rooms>(group_rooms.class));
+        List<group_rooms> l = jdbcTemplate.query("SELECT * FROM group_rooms",new BeanPropertyRowMapper<group_rooms>(group_rooms.class));
+        System.out.println("What is sent to frontend: " + l); // FOR SOME REASON THIS DOES NOT GIVE ME ALL 4 COLUMNS, JUST 3!?!?!?!?!?
+        return l;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class group_roomsDOAImpl implements group_roomsDAO {
 
     @Override
     public int save(group_rooms group_rooms) {
-        return jdbcTemplate.update("INSERT INTO group_rooms (name,library_id) VALUES (?,?)", new Object[] {group_rooms.getName(),group_rooms.getLibrary_id()});
+        return jdbcTemplate.update("INSERT INTO group_rooms (name,library_id,description) VALUES (?,?,?)", new Object[] {group_rooms.getName(),group_rooms.getLibrary_id(),group_rooms.getDescription()});
     }
 
     @Override

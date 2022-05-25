@@ -75,9 +75,28 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
     }
 
     @Override
-    public BookDetails findByISBN(String ISBN) throws DataAccessException {
-        BookDetails bookDetails = jdbcTemplate.queryForObject("SELECT * FROM book_details WHERE isbn=?", new BeanPropertyRowMapper<BookDetails>(BookDetails.class),ISBN);
-        return bookDetails;
+    public JSONObject findByISBN(String isbn) throws DataAccessException {
+        SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("get_book_by_isbn")
+                .returningResultSet("return", (rs, rn) -> {
+                    JSONObject o = new JSONObject();
+                    o.put("isbn", rs.getString("isbn"));
+                    o.put("title", rs.getString("title"));
+                    o.put("description", rs.getString("description"));
+                    o.put("language", rs.getString("language"));
+                    o.put("published", rs.getString("published"));
+                    o.put("image_source", rs.getString("image_source"));
+                    o.put("pages", rs.getInt("pages"));
+                    o.put("authors", rs.getString("authors") == null ? new String[]{} : rs.getString("authors").split(","));
+                    o.put("genres", rs.getString("genres") == null ? new String[]{} : rs.getString("genres").split(","));
+                    return o;
+                });
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("isbn", isbn);
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        Map m = simpleJdbcCall.execute(in);
+        System.out.println(((ArrayList<JSONObject>) m.get("return")).get(0));
+        return ((ArrayList<JSONObject>) m.get("return")).get(0);
     }
 
 

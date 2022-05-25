@@ -23,9 +23,9 @@ public class Book_QueueController {
     }
 
 
-    @GetMapping("/{customerId}")
+    @GetMapping("/customer/{customerId}")
     public List<Book_Queue> getReservedBooks(@PathVariable int customerId){
-        return book_queueDAO.getReservedBoks(customerId);
+        return book_queueDAO.getReservedBooks(customerId);
     }
 
 
@@ -42,9 +42,9 @@ public class Book_QueueController {
             return  new ResponseEntity<Book_Queue>(book_queue,HttpStatus.OK);
     }
 
-    @GetMapping("/ISBN/{customerId}")
-    public  boolean reserveBook(@RequestParam String ISBN, @RequestParam int customerId){
-        return book_queueDAO.reserveBook(ISBN,customerId);
+    @GetMapping("/reserve")
+    public  boolean reserveBook(@RequestParam String isbn, @RequestParam int customerId){
+        return book_queueDAO.reserveBook(isbn,customerId);
     }
 
       @GetMapping("/ISBN")
@@ -53,9 +53,9 @@ public class Book_QueueController {
       }
 
 
-      @GetMapping("/reserv/ISBN/{customerId}")
-      public int isInQueue(@RequestParam String ISBN, @RequestParam int customerId){
-        return book_queueDAO.isInQueue(ISBN,customerId);
+      @GetMapping("/in_queue")
+      public boolean isInQueue(@RequestParam String isbn, @RequestParam int customerId){
+        return book_queueDAO.isInQueue(isbn,customerId);
       }
 
       @PostMapping()
@@ -69,9 +69,10 @@ public class Book_QueueController {
          return  new ResponseEntity<String>("Reservation added successfully!" + book_queue.getQueue_date(),HttpStatus.CREATED);
       }
 
-      @DeleteMapping("/{customerId}")
-    public  ResponseEntity<?> deleteBook_QueueByCustomerId(@PathVariable int customerId){
-         book_queueDAO.deleteBook_QueueByCustomerId(customerId);
+      @GetMapping("/leave_queue")
+      public  ResponseEntity<?> deleteBook_QueueByCustomerId(@RequestParam String isbn, @RequestParam int customerId){
+          System.out.println(customerId);
+         book_queueDAO.deleteBook_QueueByCustomerId(isbn, customerId);
          return  new ResponseEntity<String>("Reservation deleted successfully!", HttpStatus.OK);
       }
 }
