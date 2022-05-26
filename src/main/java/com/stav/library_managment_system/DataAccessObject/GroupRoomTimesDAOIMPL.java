@@ -74,7 +74,6 @@ public class GroupRoomTimesDAOIMPL implements GroupRoomTimesDAO {
         inParams.put("customer_id_frontend", customer_id);
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
-        System.out.println("Database result, this is sent to Frontend: " + jdbcCall.execute(in).get("return").toString());
         return (ArrayList<JSONObject>) jdbcCall.execute(in).get("return"); // Let me be yellow
     }
 
