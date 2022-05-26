@@ -24,9 +24,9 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Override
-    public List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search) {
-        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_books")
+    public List<JSONObject> getBooks(){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("get_books")
                 .returningResultSet("return", (rs, rn) -> {
                     JSONObject o = new JSONObject();
                     o.put("isbn", rs.getString("isbn"));
@@ -41,30 +41,36 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
                     o.put("available_libraries", rs.getString("available_libraries") == null ? new String[]{} : rs.getString("available_libraries").split(","));
                     return o;
                 });
-        Map<String, String> inParams = new HashMap<>();
-        inParams.put("language", language);
-        inParams.put("releaseDate", releaseDate);
-        inParams.put("library", library);
-        inParams.put("searchType", searchType);
-        inParams.put("search", search);
-        SqlParameterSource in = new MapSqlParameterSource(inParams);
-        Map m = jdbcCall.execute(in);
+        Map m = jdbcCall.execute();
+        return (List<JSONObject>) m.get("return");
+    }
+
+    @Override
+    public List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search) {
         //filtering by search terms
-        List<JSONObject> books = ((List<JSONObject>) m.get("return")).stream().filter(o -> {
+        List<JSONObject> books = getBooks().stream().filter(o -> {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 return
                         (!language.equalsIgnoreCase("") ? o.getString("language").equalsIgnoreCase(language) : true) &&
                         (!releaseDate.equalsIgnoreCase("") ? !sdf.parse(o.getString("published")).before(sdf.parse(releaseDate)) : true) &&
-                        (!library.equalsIgnoreCase("") ? Arrays.stream((String[]) o.get("available_libraries")).anyMatch(s -> s.toLowerCase().contains(library.toLowerCase())) : true) &&
+                        (!library.equalsIgnoreCase("") ? Arrays.stream((String[]) o.get("available_libraries")).anyMatch(s -> s.equalsIgnoreCase(library)) : true) &&
                         (searchType.equalsIgnoreCase("titel") ? o.getString("title").toLowerCase().contains(search.toLowerCase()) : true) &&
-                        (searchType.equalsIgnoreCase("författare") ? Arrays.stream((String[]) o.get("authors")).anyMatch(s -> s.toLowerCase().contains(search.toLowerCase())) : true);
+                        (searchType.equalsIgnoreCase("författare") ? Arrays.stream((String[]) o.get("authors")).anyMatch(s -> s.equalsIgnoreCase(search)) : true);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             return false;
         }).toList();
         //
+        return books;
+    }
+
+    public List<JSONObject> getBooksByGenre(String[] genres){
+        for (String genre : genres) {
+            System.out.println(genre);
+        }
+        List<JSONObject> books = getBooks().stream().filter(o -> Arrays.stream((String[]) o.get("genres")).anyMatch(s -> Arrays.stream(genres).anyMatch(g -> s.equalsIgnoreCase(g)))).collect(Collectors.toList());
         return books;
     }
 

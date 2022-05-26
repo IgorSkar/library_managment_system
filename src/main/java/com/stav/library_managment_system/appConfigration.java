@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 public class appConfigration {
 
-    @Scheduled(fixedDelay = 1440)
+    /*@Scheduled(fixedDelay = 1440)
     public void sendSimpleEmail(){
         System.out.println("Jag är din sharmuto");
-    }
+    }*/
 }
