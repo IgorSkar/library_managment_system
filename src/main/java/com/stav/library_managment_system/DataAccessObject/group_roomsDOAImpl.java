@@ -2,7 +2,6 @@ package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.group_roomsDAO;
 import com.stav.library_managment_system.Models.group_rooms;
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -32,7 +31,7 @@ public class group_roomsDOAImpl implements group_roomsDAO {
 
     @Override
     public int save(group_rooms group_rooms) {
-        return jdbcTemplate.update("INSERT INTO group_rooms (name,library_id) VALUES (?,?)", new Object[] {group_rooms.getName(),group_rooms.getLibrary_id()});
+        return jdbcTemplate.update("INSERT INTO group_rooms (name,library_id,description) VALUES (?,?,?)", new Object[] {group_rooms.getName(),group_rooms.getLibrary_id(),group_rooms.getDescription()});
     }
 
     @Override

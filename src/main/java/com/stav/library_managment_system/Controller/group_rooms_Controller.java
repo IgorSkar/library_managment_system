@@ -1,7 +1,5 @@
 package com.stav.library_managment_system.Controller;
-
 import com.stav.library_managment_system.DAO.group_roomsDAO;
-import com.stav.library_managment_system.Models.GroupRoomTime;
 import com.stav.library_managment_system.Models.group_rooms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -13,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/rooms")
-public class LocalsController {
+public class group_rooms_Controller {
     @Autowired
     private group_roomsDAO group_roomsDAO;
 
@@ -27,7 +25,7 @@ public class LocalsController {
 
         group_rooms group_rooms = null;
         try {
-            group_roomsDAO.getGroupRoomsById(room_id);
+          group_rooms=  group_roomsDAO.getGroupRoomsById(room_id);
         }catch (DataAccessException e){
             e.printStackTrace();
             return  new ResponseEntity<String>("oops Id not found", HttpStatus.BAD_REQUEST);
@@ -35,15 +33,11 @@ public class LocalsController {
         return  new ResponseEntity<group_rooms>(group_rooms,HttpStatus.OK);
     }
 
-     @PostMapping()
-    public  ResponseEntity<?> createGroupRooms(group_rooms group_rooms){
-       int result = group_roomsDAO.save(group_rooms);
-       if (result == -1){
-           return  new ResponseEntity<String>("oops could not add",HttpStatus.BAD_REQUEST);
-       }
-         return  new ResponseEntity<String>("added group_rooms" + group_rooms.getName(), HttpStatus.OK);
-
-     }
+    @PostMapping
+    public  ResponseEntity<?> createGroupRooms(@RequestBody group_rooms group_rooms){
+        group_roomsDAO.save(group_rooms);
+        return new ResponseEntity<String>("added successfully!", HttpStatus.OK);
+    }
 
 
      @DeleteMapping("/{room_id}")
