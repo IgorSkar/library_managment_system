@@ -67,6 +67,11 @@ public class BookDetailsController {
         return new ResponseEntity<String>("book deleted successfully!", HttpStatus.OK);
     }
 
+    @PostMapping("/add")
+    public boolean addBook(@RequestBody String data){
+        return bookDetailsDAO.addBook(new JSONObject(data));
+    }
+
 
 }
 

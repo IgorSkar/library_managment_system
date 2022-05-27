@@ -2,6 +2,7 @@ package com.stav.library_managment_system.google;
 
 import com.stav.library_managment_system.Models.Book;
 import com.stav.library_managment_system.Models.BookDetails;
+import com.stav.library_managment_system.utils.StringUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -55,24 +56,14 @@ public class GoogleAPI {
         JSONObject book = new JSONObject();
         book.put("title", array.getJSONObject(0).getJSONObject("volumeInfo").getString("title"));
         book.put("description", array.getJSONObject(0).getJSONObject("volumeInfo").getString("description"));
-        book.put("authors", convertJSONArrayToStringArray(array.getJSONObject(0).getJSONObject("volumeInfo").getJSONArray("authors")));
-        book.put("genres", convertJSONArrayToStringArray(array.getJSONObject(0).getJSONObject("volumeInfo").getJSONArray("categories")));
+        book.put("authors", array.getJSONObject(0).getJSONObject("volumeInfo").getJSONArray("authors"));
+        book.put("genres", array.getJSONObject(0).getJSONObject("volumeInfo").getJSONArray("categories"));
         book.put("isbn", array.getJSONObject(0).getJSONObject("volumeInfo").getJSONArray("industryIdentifiers").getJSONObject(1).getString("identifier"));
         book.put("published", array.getJSONObject(0).getJSONObject("volumeInfo").getString("publishedDate"));
         book.put("pageCount", array.getJSONObject(0).getJSONObject("volumeInfo").getInt("pageCount"));
         book.put("language", array.getJSONObject(0).getJSONObject("volumeInfo").getString("language"));
         book.put("image", array.getJSONObject(0).getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail").replace("zoom=1", "zoom=10"));
         return book;
-    }
-
-    private String[] convertJSONArrayToStringArray(JSONArray array){
-        List<String> output = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            output.add(array.getString(i));
-            System.out.println(array.getString(i));
-            System.out.println(array);
-        }
-        return output.toArray(new String[output.size()]);
     }
 
 }

@@ -3,6 +3,9 @@ package com.stav.library_managment_system.DataAccessObject;
 import com.stav.library_managment_system.DAO.BookDetailsDAO;
 import com.stav.library_managment_system.Models.Book;
 import com.stav.library_managment_system.Models.BookDetails;
+import com.stav.library_managment_system.google.GoogleAPI;
+import com.stav.library_managment_system.utils.StringUtil;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -120,5 +123,26 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
     @Override
     public int deleteById(String ISBN) {
         return jdbcTemplate.update("DELETE FROM book_details WHERE isbn=?", ISBN);
+    }
+
+    public boolean addBook(JSONObject o){
+        String isbn = o.getString("isbn");
+        JSONObject object = GoogleAPI.inst().getBook(isbn);
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("add_book");
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("title", object.getString("title"));
+        inParams.put("description", object.getString("description"));
+        inParams.put("authors", String.join(",", StringUtil.convertJSONArrayToStringArray(object.getJSONArray("authors"))));
+        inParams.put("genres", String.join(",", StringUtil.convertJSONArrayToStringArray(object.getJSONArray("genres"))));
+        inParams.put("isbn", object.getString("isbn"));
+        inParams.put("published", object.getString("published"));
+        inParams.put("page_count", object.getInt("pageCount")+"");
+        inParams.put("language", object.getString("language"));
+        inParams.put("image", object.getString("image"));
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        Map m = jdbcCall.execute(in);
+        return (int) m.get("succeed") >= 1;
     }
 }
