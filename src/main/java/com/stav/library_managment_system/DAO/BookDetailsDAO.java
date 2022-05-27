@@ -11,9 +11,11 @@ public interface
 BookDetailsDAO {
     List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search);
 
+    List<JSONObject> getBooksByGenre(String[] genre);
+
     BookDetails getBookByTitle(String title);
 
-    BookDetails findByISBN(String ISBN);
+    JSONObject findByISBN(String ISBN);
 
     int save(BookDetails bookDetailsId);
 
