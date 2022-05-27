@@ -8,6 +8,6 @@ public interface GroupRoomTimesDAO {
 
     List<GroupRoomTimes> groupRoomTimes();
 
-    void create(GroupRoomTimes groupRoomTimes);
+    int createGroupRoomTimes(GroupRoomTimes groupRoomTimes);
 
 }

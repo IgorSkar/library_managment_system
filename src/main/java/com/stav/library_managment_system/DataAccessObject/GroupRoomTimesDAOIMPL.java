@@ -21,7 +21,8 @@ public class GroupRoomTimesDAOIMPL implements GroupRoomTimesDAO {
     }
 
     @Override
-    public void create(GroupRoomTimes groupRoomTimes) {
-        jdbcTemplate.update("INSERT INTO group_room_times(room_id,time,date) VALUES(?,?,?)", new Object[] {groupRoomTimes.getRoom_id(), groupRoomTimes.getTime(), groupRoomTimes.getDate()});
+    public int createGroupRoomTimes(GroupRoomTimes groupRoomTimes) {
+       return jdbcTemplate.update("INSERT INTO group_room_times(room_id,time,date) VALUES(?,?,?)", new Object[] {groupRoomTimes.getRoom_id(), groupRoomTimes.getTime(), groupRoomTimes.getDate()});
     }
+
 }
