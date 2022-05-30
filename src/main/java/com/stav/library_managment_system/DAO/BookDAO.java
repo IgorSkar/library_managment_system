@@ -23,9 +23,13 @@ public interface BookDAO {
 
     int getAmountOfBooksInStock(String isbn);
 
+    List<JSONObject> getCopiesInLibrary(int libraryId, String isbn);
+
     List<JSONObject> getAmountOfBookInLibraries(String isbn);
 
     String getBookByTitleAndISBN(String title, String ISBN);
+
+    boolean addCopies(String isbn, int libraryId, int amount);
 
 }
 

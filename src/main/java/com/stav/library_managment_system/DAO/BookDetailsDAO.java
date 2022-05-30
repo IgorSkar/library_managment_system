@@ -23,6 +23,6 @@ BookDetailsDAO {
 
     int deleteById(String  ISBN);
 
-    boolean addBook(JSONObject object);
+    boolean addBook(JSONObject sobject);
 
 }

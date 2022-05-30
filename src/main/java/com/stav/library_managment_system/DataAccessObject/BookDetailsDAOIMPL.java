@@ -126,6 +126,9 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
     }
 
     public boolean addBook(JSONObject o){
+
+        JSONObject output = new JSONObject();
+
         String isbn = o.getString("isbn");
         JSONObject object = GoogleAPI.inst().getBook(isbn);
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
@@ -143,6 +146,7 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map m = jdbcCall.execute(in);
+
         return (int) m.get("succeed") >= 1;
     }
 }

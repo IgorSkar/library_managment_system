@@ -72,7 +72,6 @@ public class BookDetailsController {
         return bookDetailsDAO.addBook(new JSONObject(data));
     }
 
-
 }
 
 
