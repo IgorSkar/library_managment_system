@@ -62,7 +62,7 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
                         (!language.equalsIgnoreCase("") ? o.getString("language").equalsIgnoreCase(language) : true) &&
                         (!releaseDate.equalsIgnoreCase("") ? !sdf.parse(o.getString("published")).before(sdf.parse(releaseDate)) : true) &&
                         (!library.equalsIgnoreCase("") ? Arrays.stream((String[]) o.get("available_libraries")).anyMatch(s -> s.equalsIgnoreCase(library)) : true) &&
-                        (searchType.equalsIgnoreCase("titel") ? o.getString("title").toLowerCase().contains(search.toLowerCase()) : true) &&
+                        (searchType.equalsIgnoreCase("titel") ||searchType.equalsIgnoreCase("") ? o.getString("title").toLowerCase().contains(search.toLowerCase()) : true) &&
                         (searchType.equalsIgnoreCase("författare") ? Arrays.stream((String[]) o.get("authors")).anyMatch(s -> s.equalsIgnoreCase(search)) : true);
             } catch (ParseException e) {
                 e.printStackTrace();
