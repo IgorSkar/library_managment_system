@@ -2,6 +2,7 @@ package com.stav.library_managment_system.Controller;
 
 import com.stav.library_managment_system.DAO.CustomerDAO;
 import com.stav.library_managment_system.Models.Customer;
+import com.stav.library_managment_system.Models.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -66,6 +67,11 @@ public class CustomerController {
     @GetMapping("/login")
     public Customer isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
         return customerDAO.isValidCustomer(email, password);
+    }
+
+    @GetMapping("getCustomerByEmail")
+    public Customer getCustomerByEmail(@RequestParam() String email){
+        return customerDAO.getByEmail(email);
     }
 
 }

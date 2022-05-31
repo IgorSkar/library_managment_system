@@ -1,6 +1,8 @@
 package com.stav.library_managment_system.DAO;
 
 import com.stav.library_managment_system.Models.Customer;
+import com.stav.library_managment_system.Models.Employee;
+
 import java.util.List;
 
 public interface CustomerDAO  {
@@ -19,8 +21,9 @@ public interface CustomerDAO  {
 
     int update(Customer customer, int customerId);
 
-
     void  deleteById(int customerId);
+
+    Customer getByEmail(String email);
 
 }
 
