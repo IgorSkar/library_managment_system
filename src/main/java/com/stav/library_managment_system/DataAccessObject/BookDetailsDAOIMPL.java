@@ -42,6 +42,10 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
                     o.put("authors", rs.getString("authors") == null ? new String[]{} : rs.getString("authors").split(","));
                     o.put("genres", rs.getString("genres") == null ? new String[]{} : rs.getString("genres").split(","));
                     o.put("available_libraries", rs.getString("available_libraries") == null ? new String[]{} : rs.getString("available_libraries").split(","));
+                    o.put("popular_all_time", rs.getInt("popular_all_time"));
+                    o.put("popular_year", rs.getInt("popular_year"));
+                    o.put("popular_month", rs.getInt("popular_month"));
+                    o.put("popular_week", rs.getInt("popular_week"));
                     return o;
                 });
         Map m = jdbcCall.execute();
@@ -49,7 +53,7 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
     }
 
     @Override
-    public List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search) {
+    public List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search, String popularSort) {
         //filtering by search terms
         List<JSONObject> books = getBooks().stream().filter(o -> {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -64,8 +68,24 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
                 e.printStackTrace();
             }
             return false;
-        }).toList();
+        }).collect(Collectors.toList());
         //
+        switch(popularSort.toLowerCase()){
+            case "":
+                break;
+            case "all_time":
+                books.sort(Comparator.comparing(o -> ((JSONObject)o).getInt("popular_all_time")).reversed());
+                break;
+            case "year":
+                books.sort(Comparator.comparing(o -> ((JSONObject)o).getInt("popular_year")).reversed());
+                break;
+            case "month":
+                books.sort(Comparator.comparing(o -> ((JSONObject)o).getInt("popular_month")).reversed());
+                break;
+            case "week":
+                books.sort(Comparator.comparing(o -> ((JSONObject)o).getInt("popular_week")).reversed());
+                break;
+        }
         return books;
     }
 

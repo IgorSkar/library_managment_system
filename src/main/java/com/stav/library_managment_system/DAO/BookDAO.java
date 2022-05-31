@@ -15,7 +15,7 @@ public interface BookDAO {
 
     int save(String ISBN, int libraryId);
 
-    int  deleteBook(int bookId);
+    boolean deleteBook(int bookId);
 
     String getBookWithBookId(int bookId);
 

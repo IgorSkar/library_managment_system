@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface
 BookDetailsDAO {
-    List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search);
+    List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search, String popularSort);
 
     List<JSONObject> getBooksByGenre(String[] genre);
 
@@ -23,6 +23,6 @@ BookDetailsDAO {
 
     int deleteById(String  ISBN);
 
-    boolean addBook(JSONObject sobject);
+    boolean addBook(JSONObject object);
 
 }
