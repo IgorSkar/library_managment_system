@@ -12,7 +12,7 @@ public interface EmployeeDAO {
 
      Employee getEmployeeId (int employeeId);
 
-     Employee isValidEmployee(String user_name, String password);
+     Employee isValidEmployee(String email, String password);
 
      boolean createEmployee(String firstName, String lastName, String username, String password, String role);
 

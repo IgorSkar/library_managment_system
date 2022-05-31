@@ -2,6 +2,7 @@ package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.CustomerDAO;
 import com.stav.library_managment_system.Models.Customer;
+import com.stav.library_managment_system.Models.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -75,6 +76,12 @@ public class CustomerDAOImpl implements CustomerDAO {
     public Customer getByFirstName(String firstName) throws DataAccessException {
         Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE first_name=?", new BeanPropertyRowMapper<Customer>(Customer.class), firstName);
         return customer;
+    }
 
+    @Override
+    public Customer getByEmail(String email){
+        Customer c = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email =?", new BeanPropertyRowMapper<Customer>(Customer.class),email);
+        System.out.println("Staff in backend: " + c);
+        return c;
     }
 }

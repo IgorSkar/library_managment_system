@@ -42,7 +42,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         Map<String, String> inParams = new HashMap<>();
         inParams.put("first_name", firstName);
         inParams.put("last_name", lastName);
-        inParams.put("username", username);
+        inParams.put("user_name", username);
         inParams.put("password", password);
         inParams.put("role", role);
 
@@ -53,13 +53,13 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     @Override
     public int save(Employee employee) {
-        return jdbcTemplate.update("INSERT INTO employees (first_name,last_name,username,password) VALUES (?,?,?,?)",new Object[]{employee.getFirst_name(),employee.getLast_name(),employee.getUsername(),employee.getPassword()});
+        return jdbcTemplate.update("INSERT INTO employees (first_name,last_name,password) VALUES (?,?,?)",new Object[]{employee.getFirst_name(),employee.getLast_name(),employee.getPassword()});
     }
 
 
     @Override
     public int update(Employee employee, int employeeId) {
-        return jdbcTemplate.update("UPDATE employees SET username=?, password=? WHERE employee_id=?",new Object[] {employee.getUsername(),employee.getPassword(),employeeId});
+        return jdbcTemplate.update("UPDATE employees SET password=? WHERE employee_id=?",new Object[] {employee.getPassword(),employeeId});
     }
 
 
@@ -76,10 +76,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 
    @Override
-    public Employee isValidEmployee(String username, String password) {
-       String query = "SELECT * FROM employees WHERE username =? AND password =?";
+    public Employee isValidEmployee(String email, String password) {
+       String query = "SELECT * FROM employees WHERE email =? AND password =?";
        try {
-           Employee employee = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Employee.class), username, password);
+           Employee employee = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Employee.class), email, password);
+           System.out.println("This is what we get in backend from Database: " + employee.toString());
            return employee;
        }catch(EmptyResultDataAccessException e){
            return null;

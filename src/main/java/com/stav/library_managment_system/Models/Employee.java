@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 
   public class Employee {
     private int employee_id;
-    private  String first_name;
-    private  String last_name;
-    private String username;
-    private  String password;
+    private String first_name;
+    private String last_name;
+    private String email;
+    private String password;
     private String role;
 }
