@@ -30,6 +30,8 @@ public class LoanController {
         return loanDAO.getLoansByCustomerId(customerId);
     }
 
+
+
     @GetMapping("/{customerId}/{bookId}")
     public  ResponseEntity<?> getLoanByCustomerId(@PathVariable int customerId,@PathVariable int bookId){
          Loan loan = null;
@@ -84,6 +86,7 @@ public class LoanController {
 
          return  new ResponseEntity<String>("Loan added" + result,HttpStatus.OK);
      }
+
 
     @PutMapping("/{customerId}")
     public  ResponseEntity<?> updateLoan(@RequestBody Loan loan,@PathVariable int customerId){

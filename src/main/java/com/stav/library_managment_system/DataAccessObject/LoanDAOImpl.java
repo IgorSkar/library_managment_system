@@ -1,10 +1,8 @@
 package com.stav.library_managment_system.DataAccessObject;
-
 import com.stav.library_managment_system.DAO.LoanDAO;
 import com.stav.library_managment_system.Models.Book;
 import com.stav.library_managment_system.Models.BookDetails;
 import com.stav.library_managment_system.Models.Loan;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,13 +14,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
-
 @Repository
 public class LoanDAOImpl implements LoanDAO {
 
@@ -51,9 +45,7 @@ public class LoanDAOImpl implements LoanDAO {
                     rowSet.getString("return_date")
             ));
         }
-        return output;
-    }
-
+        return output;}
     /**
      *
      * @param customerId get loan by customerId and bookId
@@ -88,15 +80,13 @@ public class LoanDAOImpl implements LoanDAO {
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map map = jdbcCall.execute(in);
-        System.out.println(map.get("succeed"));
         return (int) map.get("succeed") >= 1;
     }
 
     public List<Loan> getLoanedBooksWithIsbn(String isbn){
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("get_loaned_books_with_isbn")
                 .returningResultSet("return", (rs, rn) -> {
-                    return new Loan(
-                            rs.getInt("book_id"),
+                    return new Loan(rs.getInt("book_id"),
                             rs.getInt("customer_id"),
                             rs.getString("loan_date"),
                             rs.getString("return_date")
@@ -109,7 +99,6 @@ public class LoanDAOImpl implements LoanDAO {
         Map m = jdbcCall.execute(in);
         return (List<Loan>) m.get("return");
     }
-
     /**
      *
      * @param loan create loan
@@ -120,8 +109,6 @@ public class LoanDAOImpl implements LoanDAO {
     public int save(Loan loan) {
         return jdbcTemplate.update("INSERT INTO loans (book_id,customer_id,loan_date,return_date) VALUES (?,?,?,?)",new Object[]{loan.getBook_id(),loan.getCustomer_id(),loan.getLoan_date(),loan.getReturn_date()});
     }
-
-     // behöver vi uppdatera ett befintligt loan iså fall behöver vi uppdatera allt eller räcker det om man vill förlänga return_date bara?
     @Override
     public int update(Loan loan,int customerId) {
         return jdbcTemplate.update("UPDATE loans SET  return_date",new Object[] {loan.getReturn_date()},customerId);
@@ -136,7 +123,6 @@ public class LoanDAOImpl implements LoanDAO {
         jdbcTemplate.update("DELETE FROM loans WHERE customer_id=?",customerId);
 
     }
-
     @Override
     public String saveWithISBN(String isbn, int customerId)  throws EmptyResultDataAccessException, DataIntegrityViolationException {
         Book book=  jdbcTemplate.queryForObject("SELECT * FROM books WHERE isbn=? limit 1", new BeanPropertyRowMapper<Book>(Book.class),isbn);
@@ -149,8 +135,22 @@ public class LoanDAOImpl implements LoanDAO {
           String result = "book" + bookDetails.toString() + "loans to " + customerId + "on loan " + loanDate;
         System.out.println(result);
         return result;
+    }
+    @Override
+    public List<Loan> getLoansDueWithinDate(String date) {
+        String query = "SELECT * FROM loans WHERE return_date=?";
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(query, date);
+        List<Loan> output = new ArrayList<>();
+        while(rowSet.next()){
+            output.add(new Loan(
+                    rowSet.getInt("book_id"),
+                    rowSet.getInt("customer_id"),
+                    rowSet.getString("loan_date"),
+                    rowSet.getString("return_date")
+            ));
+        }
+        return output;}
+
 
     }
 
-
-}

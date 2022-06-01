@@ -70,9 +70,8 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public int deleteBook(int bookId) {
-        return jdbcTemplate.update("DELETE from books WHERE book_id=?", bookId);
-
+    public boolean deleteBook(int bookId) {
+        return jdbcTemplate.update("DELETE FROM books WHERE book_id=?", bookId) >= 1;
     }
 
     @Override
@@ -119,7 +118,22 @@ public class BookDAOImpl implements BookDAO {
         return (List<JSONObject>) m.get("return");
     }
 
+    public List<JSONObject> getCopiesInLibrary(int libraryId, String isbn){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("get_copies_in_library")
+                .returningResultSet("return", (rs, rn) -> {
+                    JSONObject o = new JSONObject();
+                    o.put("book_id", rs.getInt("book_id"));
+                    o.put("available", rs.getInt("available"));
+                    return o;
+                });
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("library_id", libraryId+"");
+        inParams.put("isbn", isbn);
 
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        return (List<JSONObject>) jdbcCall.execute(in).get("return");
+    }
 
     @Override
     public String getBookByTitleAndISBN(String title, String ISBN) {
@@ -128,6 +142,18 @@ public class BookDAOImpl implements BookDAO {
         String result = "book" + bookDetails.toString() + "title" + title + "book" + book.toString() + "ISBN" + ISBN;
         return result;
 
+    }
+
+    public boolean addCopies(String isbn, int libraryId, int amount){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("add_copies");
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("isbn", isbn);
+        inParams.put("library_id", libraryId+"");
+        inParams.put("amount", amount+"");
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        return (int) jdbcCall.execute(in).get("succeed") >= 1;
     }
 
 }

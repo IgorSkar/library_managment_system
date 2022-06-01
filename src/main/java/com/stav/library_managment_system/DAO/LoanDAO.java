@@ -26,4 +26,7 @@ public interface LoanDAO {
 
 
     String saveWithISBN(String isbn, int customerId);
+
+
+    List<Loan> getLoansDueWithinDate(String date);
 }

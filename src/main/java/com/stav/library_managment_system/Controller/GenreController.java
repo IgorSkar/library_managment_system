@@ -2,7 +2,6 @@ package com.stav.library_managment_system.Controller;
 
 import com.stav.library_managment_system.DAO.GenreDAO;
 import com.stav.library_managment_system.Models.Genre;
-import com.stav.library_managment_system.Exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,7 @@ public class GenreController {
     }
 
     @GetMapping ("/{genreId}")
-    public  ResponseEntity<?> getGenreById(@PathVariable int genreId) throws ResourceNotFoundException {
+    public  ResponseEntity<?> getGenreById(@PathVariable int genreId) throws DataAccessException {
       Genre genre= null;
       try {
           genre = genreDAO.getById(genreId);

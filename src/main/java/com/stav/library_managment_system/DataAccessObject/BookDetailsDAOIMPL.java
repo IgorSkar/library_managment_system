@@ -3,6 +3,9 @@ package com.stav.library_managment_system.DataAccessObject;
 import com.stav.library_managment_system.DAO.BookDetailsDAO;
 import com.stav.library_managment_system.Models.Book;
 import com.stav.library_managment_system.Models.BookDetails;
+import com.stav.library_managment_system.google.GoogleAPI;
+import com.stav.library_managment_system.utils.StringUtil;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -39,6 +42,10 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
                     o.put("authors", rs.getString("authors") == null ? new String[]{} : rs.getString("authors").split(","));
                     o.put("genres", rs.getString("genres") == null ? new String[]{} : rs.getString("genres").split(","));
                     o.put("available_libraries", rs.getString("available_libraries") == null ? new String[]{} : rs.getString("available_libraries").split(","));
+                    o.put("popular_all_time", rs.getInt("popular_all_time"));
+                    o.put("popular_year", rs.getInt("popular_year"));
+                    o.put("popular_month", rs.getInt("popular_month"));
+                    o.put("popular_week", rs.getInt("popular_week"));
                     return o;
                 });
         Map m = jdbcCall.execute();
@@ -46,7 +53,7 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
     }
 
     @Override
-    public List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search) {
+    public List<JSONObject> findAll(String language, String releaseDate, String library, String searchType, String search, String popularSort) {
         //filtering by search terms
         List<JSONObject> books = getBooks().stream().filter(o -> {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -55,14 +62,30 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
                         (!language.equalsIgnoreCase("") ? o.getString("language").equalsIgnoreCase(language) : true) &&
                         (!releaseDate.equalsIgnoreCase("") ? !sdf.parse(o.getString("published")).before(sdf.parse(releaseDate)) : true) &&
                         (!library.equalsIgnoreCase("") ? Arrays.stream((String[]) o.get("available_libraries")).anyMatch(s -> s.equalsIgnoreCase(library)) : true) &&
-                        (searchType.equalsIgnoreCase("titel") ? o.getString("title").toLowerCase().contains(search.toLowerCase()) : true) &&
-                        (searchType.equalsIgnoreCase("författare") ? Arrays.stream((String[]) o.get("authors")).anyMatch(s -> s.equalsIgnoreCase(search)) : true);
+                        (searchType.equalsIgnoreCase("titel") ||searchType.equalsIgnoreCase("") ? o.getString("title").toLowerCase().contains(search.toLowerCase()) : true) &&
+                        (searchType.equalsIgnoreCase("författare") ? Arrays.asList((String[]) o.get("authors")).isEmpty() ? true : Arrays.stream((String[]) o.get("authors")).anyMatch(s -> s.toLowerCase().contains(search.toLowerCase())) : true);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             return false;
-        }).toList();
+        }).collect(Collectors.toList());
         //
+        switch(popularSort.toLowerCase()){
+            case "":
+                break;
+            case "all_time":
+                books.sort(Comparator.comparing(o -> ((JSONObject)o).getInt("popular_all_time")).reversed());
+                break;
+            case "year":
+                books.sort(Comparator.comparing(o -> ((JSONObject)o).getInt("popular_year")).reversed());
+                break;
+            case "month":
+                books.sort(Comparator.comparing(o -> ((JSONObject)o).getInt("popular_month")).reversed());
+                break;
+            case "week":
+                books.sort(Comparator.comparing(o -> ((JSONObject)o).getInt("popular_week")).reversed());
+                break;
+        }
         return books;
     }
 
@@ -120,5 +143,30 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
     @Override
     public int deleteById(String ISBN) {
         return jdbcTemplate.update("DELETE FROM book_details WHERE isbn=?", ISBN);
+    }
+
+    public boolean addBook(JSONObject o){
+
+        JSONObject output = new JSONObject();
+
+        String isbn = o.getString("isbn");
+        JSONObject object = GoogleAPI.inst().getBook(isbn);
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("add_book");
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("title", object.getString("title"));
+        inParams.put("description", object.getString("description"));
+        inParams.put("authors", String.join(",", StringUtil.convertJSONArrayToStringArray(object.getJSONArray("authors"))));
+        inParams.put("genres", String.join(",", StringUtil.convertJSONArrayToStringArray(object.getJSONArray("genres"))));
+        inParams.put("isbn", object.getString("isbn"));
+        inParams.put("published", object.getString("published"));
+        inParams.put("page_count", object.getInt("pages")+"");
+        inParams.put("language", object.getString("language"));
+        inParams.put("image_source", object.getString("image_source"));
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        Map m = jdbcCall.execute(in);
+
+        return (int) m.get("succeed") >= 1;
     }
 }

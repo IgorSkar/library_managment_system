@@ -18,8 +18,8 @@ public class BookDetailsController {
     private BookDetailsDAO bookDetailsDAO;
 
     @GetMapping
-    public String getAllBookDetails(@RequestParam String language, @RequestParam String releaseDate, @RequestParam String library, @RequestParam String searchType, @RequestParam String search) {
-        return bookDetailsDAO.findAll(language, releaseDate, library, searchType, search).toString();
+    public String getAllBookDetails(@RequestParam String language, @RequestParam String releaseDate, @RequestParam String library, @RequestParam String searchType, @RequestParam String search, @RequestParam String popularSort) {
+        return bookDetailsDAO.findAll(language, releaseDate, library, searchType, search, popularSort).toString();
     }
 
     @GetMapping("/genre/{genre}")
@@ -67,6 +67,10 @@ public class BookDetailsController {
         return new ResponseEntity<String>("book deleted successfully!", HttpStatus.OK);
     }
 
+    @PostMapping("/add")
+    public boolean addBook(@RequestBody String data){
+        return bookDetailsDAO.addBook(new JSONObject(data));
+    }
 
 }
 
