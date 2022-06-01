@@ -22,16 +22,9 @@ public class LibraryController {
         return libraryDAO.getLibraries();
 
     }
-        @GetMapping("/{LibraryId}")
-        public ResponseEntity<?> getLibraryById(@PathVariable int LibraryId) {
-            Library library = null;
-            try {
-                library = libraryDAO.getLibraryById(LibraryId);
-            } catch (DataAccessException e) {
-                e.printStackTrace();
-                return new ResponseEntity<String>("Something was wrong", HttpStatus.BAD_REQUEST);
-            }
-            return new ResponseEntity<>(library, HttpStatus.BAD_REQUEST);
+        @GetMapping("/{id}")
+        public Library getLibraryById(@PathVariable("id") int libraryId) {
+            return libraryDAO.getLibraryById(libraryId);
         }
 
 

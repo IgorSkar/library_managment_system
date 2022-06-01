@@ -46,15 +46,13 @@ public class EmployeeController {
       }
 
     @GetMapping("login")
-       public Employee isValidEmployee(@RequestParam() String username, @RequestParam() String password) {
-        return employeeDAO.isValidEmployee(username, password);
+       public Employee isValidEmployee(@RequestParam() String email, @RequestParam() String password) {
+        return employeeDAO.isValidEmployee(email, password);
     }
 
-
-
     @GetMapping("create")
-    public boolean createEmployee(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String username, @RequestParam String password, @RequestParam String role){
-        return employeeDAO.createEmployee(firstName, lastName, username, password, role);
+    public boolean createEmployee(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String email, @RequestParam String password, @RequestParam String role){
+        return employeeDAO.createEmployee(firstName, lastName, email, password, role);
     }
 
     @PutMapping("/{employeeId}")

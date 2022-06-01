@@ -1,8 +1,9 @@
 package com.stav.library_managment_system.DataAccessObject;
 
-import com.stav.library_managment_system.DAO.CustomerDAO;
+import com.stav.library_managment_system.DAO.CustomerDAO;;
 import com.stav.library_managment_system.Models.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -18,6 +19,7 @@ import java.util.*;
 public class CustomerDAOImpl implements CustomerDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
 
 
     @Override
@@ -64,17 +66,15 @@ public class CustomerDAOImpl implements CustomerDAO {
         return jdbcTemplate.update("UPDATE customers SET email=?, password=?  WHERE  customer_id=?", new Object[]{customer.getEmail(), customer.getPassword(), customerId});
     }
 
-
     @Override
     public void deleteById(int customerId) {
-        jdbcTemplate.update("DELETE FROM customers WHERE customer_id=?", customerId);
+        jdbcTemplate.update("DELETE FROM customer WHERE customer_id=?", customerId);
     }
-
 
     @Override
     public Customer getByFirstName(String firstName) throws DataAccessException {
         Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE first_name=?", new BeanPropertyRowMapper<Customer>(Customer.class), firstName);
         return customer;
-
     }
+
 }
