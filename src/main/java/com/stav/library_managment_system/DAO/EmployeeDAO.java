@@ -25,6 +25,4 @@ public interface EmployeeDAO {
 
     Employee getByFirstName(String firstName) ;
 
-
-   // Employee isValidUserAndPassword(String userName, String password);
 }

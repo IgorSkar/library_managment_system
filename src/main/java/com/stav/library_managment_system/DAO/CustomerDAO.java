@@ -1,7 +1,6 @@
 package com.stav.library_managment_system.DAO;
 
 import com.stav.library_managment_system.Models.Customer;
-import com.stav.library_managment_system.Models.Employee;
 
 import java.util.List;
 
@@ -17,13 +16,15 @@ public interface CustomerDAO  {
 
     boolean createCustomer(String firstName, String lastName, String mail, String password);
 
-    int save (Customer customer);
+   int save (Customer customer);
 
     int update(Customer customer, int customerId);
 
+
     void  deleteById(int customerId);
 
-    Customer getByEmail(String email);
+
+
 
 }
 
