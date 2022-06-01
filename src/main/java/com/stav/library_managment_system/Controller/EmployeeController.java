@@ -2,6 +2,7 @@ package com.stav.library_managment_system.Controller;
 
 import com.stav.library_managment_system.DAO.EmployeeDAO;
 import com.stav.library_managment_system.Models.Employee;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -9,13 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/employees")
 public class EmployeeController {
-
     @Autowired
     private EmployeeDAO employeeDAO;
+
 
 
     @GetMapping
@@ -51,7 +52,6 @@ public class EmployeeController {
     }
 
 
-
     @GetMapping("create")
     public boolean createEmployee(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String username, @RequestParam String password, @RequestParam String role){
         return employeeDAO.createEmployee(firstName, lastName, username, password, role);
@@ -69,4 +69,8 @@ public class EmployeeController {
          employeeDAO.delete(employeeId);
         return  new ResponseEntity<String>("employee deleted successfully!",HttpStatus.OK);
     }
+
+
+
+
 }

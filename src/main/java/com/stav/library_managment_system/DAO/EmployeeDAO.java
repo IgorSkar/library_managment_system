@@ -12,9 +12,9 @@ public interface EmployeeDAO {
 
      Employee getEmployeeId (int employeeId);
 
-     Employee isValidEmployee(String user_name, String password);
+     Employee isValidEmployee(String email, String password);
 
-     boolean createEmployee(String firstName, String lastName, String username, String password, String role);
+     boolean createEmployee(String firstName, String lastName, String email, String password, String role);
 
     int save (Employee employee);
 
@@ -25,6 +25,4 @@ public interface EmployeeDAO {
 
     Employee getByFirstName(String firstName) ;
 
-
-   // Employee isValidUserAndPassword(String userName, String password);
 }

@@ -1,20 +1,17 @@
 package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.EmployeeDAO;
-import com.stav.library_managment_system.Models.Customer;
 import com.stav.library_managment_system.Models.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +20,6 @@ import java.util.Map;
 public class EmployeeDAOImpl implements EmployeeDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    //private SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("scanUserNamePassword");
 
     @Override
     public List<Employee> getAllEmployees() {
@@ -53,13 +48,13 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     @Override
     public int save(Employee employee) {
-        return jdbcTemplate.update("INSERT INTO employees (first_name,last_name,username,password) VALUES (?,?,?,?)",new Object[]{employee.getFirst_name(),employee.getLast_name(),employee.getUsername(),employee.getPassword()});
+        return jdbcTemplate.update("INSERT INTO employees (first_name,last_name,email,password) VALUES (?,?,?,?)",new Object[]{employee.getFirst_name(),employee.getLast_name(),employee.getEmail(),employee.getPassword(),employee});
     }
 
 
     @Override
     public int update(Employee employee, int employeeId) {
-        return jdbcTemplate.update("UPDATE employees SET username=?, password=? WHERE employee_id=?",new Object[] {employee.getUsername(),employee.getPassword(),employeeId});
+        return jdbcTemplate.update("UPDATE employees SET email=?, password=? WHERE employee_id=?",new Object[] {employee.getEmail(),employee.getPassword(),employeeId});
     }
 
 
@@ -75,16 +70,17 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         return employee;
     }
 
-   @Override
-    public Employee isValidEmployee(String username, String password) {
-       String query = "SELECT * FROM employees WHERE username =? AND password =?";
+    @Override
+    public Employee isValidEmployee(String email, String password) {
+       String query = "SELECT * FROM employees WHERE email =? AND password =?";
        try {
-           Employee employee = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Employee.class), username, password);
+           Employee employee = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Employee.class), email, password);
            return employee;
        }catch(EmptyResultDataAccessException e){
            return null;
        }
    }
+
 }
 
 
