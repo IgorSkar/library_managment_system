@@ -1,4 +1,6 @@
 package com.stav.library_managment_system.Email;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,9 @@ public class EmailSenderService {
    message.setTo(toEmail);
    message.setText(body);
    message.setSubject(subject);
-  // mailSender.send(message);
+   mailSender.send(message);
 
         System.out.println("Mail send successfully!");
-
-
 
 
     }

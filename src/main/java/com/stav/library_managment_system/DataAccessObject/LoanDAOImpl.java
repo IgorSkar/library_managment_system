@@ -80,7 +80,6 @@ public class LoanDAOImpl implements LoanDAO {
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map map = jdbcCall.execute(in);
-        System.out.println(map.get("succeed"));
         return (int) map.get("succeed") >= 1;
     }
 

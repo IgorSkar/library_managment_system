@@ -42,11 +42,10 @@ public class BookController {
         }
         return new ResponseEntity<String>("book added successfully!", HttpStatus.OK);
     }
-    @DeleteMapping("/{bookId}")
 
-    public ResponseEntity<?> deleteBookById(@PathVariable int bookId){
-        int result = bookDAO.deleteBook(bookId);
-        return new ResponseEntity<String>("book deleted successfully!",HttpStatus.OK);
+    @GetMapping("/delete/{bookId}")
+    public boolean deleteBookById(@PathVariable int bookId){
+        return bookDAO.deleteBook(bookId);
     }
 
     @GetMapping("amount_with_isbn/{isbn}")
@@ -64,6 +63,11 @@ public class BookController {
         return bookDAO.getAmountOfBookInLibraries(isbn).toString();
     }
 
+    @GetMapping("copies_in_library")
+    public String getCopiesInLibrary(@RequestParam("library_id") int libraryId, @RequestParam("isbn") String isbn){
+        return bookDAO.getCopiesInLibrary(libraryId, isbn).toString();
+    }
+
     @GetMapping("/title/ISBN")
      public ResponseEntity<?> getBookByTitleAndISBN(@RequestParam String title, @RequestParam String ISBN){
         Book book = null;
@@ -75,6 +79,12 @@ public class BookController {
         }
         return  new ResponseEntity<Book>( book,HttpStatus.OK);
 
+    }
+
+    @PostMapping("add_multiple")
+    public boolean addCopies(@RequestBody String data){
+        JSONObject o = new JSONObject(data);
+        return bookDAO.addCopies(o.getString("isbn"), o.getInt("library_id"), o.getInt("amount"));
     }
 }
 
