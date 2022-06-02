@@ -63,7 +63,7 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
                         (!releaseDate.equalsIgnoreCase("") ? !sdf.parse(o.getString("published")).before(sdf.parse(releaseDate)) : true) &&
                         (!library.equalsIgnoreCase("") ? Arrays.stream((String[]) o.get("available_libraries")).anyMatch(s -> s.equalsIgnoreCase(library)) : true) &&
                         (searchType.equalsIgnoreCase("titel") ||searchType.equalsIgnoreCase("") ? o.getString("title").toLowerCase().contains(search.toLowerCase()) : true) &&
-                        (searchType.equalsIgnoreCase("författare") ? Arrays.stream((String[]) o.get("authors")).anyMatch(s -> s.equalsIgnoreCase(search)) : true);
+                        (searchType.equalsIgnoreCase("författare") ? Arrays.asList((String[]) o.get("authors")).isEmpty() ? true : Arrays.stream((String[]) o.get("authors")).anyMatch(s -> s.toLowerCase().contains(search.toLowerCase())) : true);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -160,9 +160,9 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
         inParams.put("genres", String.join(",", StringUtil.convertJSONArrayToStringArray(object.getJSONArray("genres"))));
         inParams.put("isbn", object.getString("isbn"));
         inParams.put("published", object.getString("published"));
-        inParams.put("page_count", object.getInt("pageCount")+"");
+        inParams.put("page_count", object.getInt("pages")+"");
         inParams.put("language", object.getString("language"));
-        inParams.put("image", object.getString("image"));
+        inParams.put("image_source", object.getString("image_source"));
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map m = jdbcCall.execute(in);
