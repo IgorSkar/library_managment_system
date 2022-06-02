@@ -77,4 +77,10 @@ public class CustomerDAOImpl implements CustomerDAO {
         return customer;
     }
 
+    @Override
+    public Customer getByEmail(String email){
+        Customer c = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email=?", new BeanPropertyRowMapper<Customer>(Customer.class), email);
+        return c;
+    }
+
 }
