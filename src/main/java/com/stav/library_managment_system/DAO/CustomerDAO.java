@@ -12,6 +12,8 @@ public interface CustomerDAO  {
 
     Customer getById (int customerId);
 
+    Customer getByEmail (String email);
+
     Customer isValidCustomer(String email, String password);
 
     boolean createCustomer(String firstName, String lastName, String mail, String password);
@@ -19,7 +21,6 @@ public interface CustomerDAO  {
    int save (Customer customer);
 
     int update(Customer customer, int customerId);
-
 
     void  deleteById(int customerId);
 

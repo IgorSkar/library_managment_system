@@ -71,7 +71,7 @@ public class BookDAOImpl implements BookDAO {
 
     @Override
     public boolean deleteBook(int bookId) {
-        return jdbcTemplate.update("DELETE from books WHERE book_id=?", bookId) >= 1;
+        return jdbcTemplate.update("DELETE FROM books WHERE book_id=?", bookId) >= 1;
     }
 
     @Override

@@ -43,12 +43,12 @@ public class CustomerDAOImpl implements CustomerDAO {
         return customer;
     }
 
-    public boolean createCustomer(String firstName, String lastName, String mail, String password){
+    public boolean createCustomer(String first_name, String last_name, String email, String password){
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_customer");
         Map<String, String> inParams = new HashMap<>();
-        inParams.put("first_name", firstName);
-        inParams.put("last_name", lastName);
-        inParams.put("email", mail);
+        inParams.put("first_name", first_name);
+        inParams.put("last_name", last_name);
+        inParams.put("username", email);
         inParams.put("password", password);
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
@@ -57,7 +57,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public int save(Customer customer) {
-        return jdbcTemplate.update("INSERT INTO customers (first_name, last_name, email, password) VALUES (?, ?, ?, ?)", new Object[]{customer.getFirst_name(), customer.getLast_name(), customer.getEmail(), customer.getPassword()});
+        return jdbcTemplate.update("INSERT INTO customers (first_name, last_name, email, password) VALUES (?, ?, ?, ?)", new Object[]{customer.getFirst_name() ,customer.getLast_name(), customer.getEmail(), customer.getPassword()});
     }
 
     @Override
@@ -75,6 +75,12 @@ public class CustomerDAOImpl implements CustomerDAO {
     public Customer getByFirstName(String firstName) throws DataAccessException {
         Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE first_name=?", new BeanPropertyRowMapper<Customer>(Customer.class), firstName);
         return customer;
+    }
+
+    @Override
+    public Customer getByEmail(String email){
+        Customer c = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email=?", new BeanPropertyRowMapper<Customer>(Customer.class), email);
+        return c;
     }
 
 }
