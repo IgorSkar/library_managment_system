@@ -37,12 +37,12 @@ public class EmployeeDAOImpl implements EmployeeDAO {
        return employee;
     }
 
-    public boolean createEmployee(String firstName, String lastName, String email, String password, String role){
+    public boolean createEmployee(String first_name, String last_name, String email, String password, String role){
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_employee");
         Map<String, String> inParams = new HashMap<>();
-        inParams.put("first_name", firstName);
-        inParams.put("last_name", lastName);
-        inParams.put("email", email);
+        inParams.put("first_name", first_name);
+        inParams.put("last_name", last_name);
+        inParams.put("username", email);
         inParams.put("password", password);
         inParams.put("role", role);
 
