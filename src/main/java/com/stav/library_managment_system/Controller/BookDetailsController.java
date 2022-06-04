@@ -67,6 +67,11 @@ public class BookDetailsController {
         return new ResponseEntity<String>("book deleted successfully!", HttpStatus.OK);
     }
 
+    @GetMapping("/add")
+    public boolean addBook(@RequestParam String title, @RequestParam String description, @RequestParam String authors, @RequestParam String genres, @RequestParam String isbn, @RequestParam String published, @RequestParam int page_count, @RequestParam String language, @RequestParam String image){
+        return bookDetailsDAO.addBook (title, description, authors, genres, isbn, published, page_count, language, image);
+    }
+
     @PostMapping("/add")
     public boolean addBook(@RequestBody String data){
         return bookDetailsDAO.addBook(new JSONObject(data));

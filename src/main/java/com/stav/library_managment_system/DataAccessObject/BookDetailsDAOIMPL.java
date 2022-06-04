@@ -169,4 +169,20 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
 
         return (int) m.get("succeed") >= 1;
     }
+    public boolean addBook (String title, String description, String authors, String genres, String isbn, String published, int page_count, String language, String image) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("add_book");
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("title", title);
+        inParams.put("description", description);
+        inParams.put("authors", authors);
+        inParams.put("genres", genres);
+        inParams.put("isbn", isbn);
+        inParams.put("published", published);
+        inParams.put("page_count", page_count +"");
+        inParams.put("language", language);
+        inParams.put("image_source", image);
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        return (int) jdbcCall.execute(in).get("succeed") >= 1;
+    }
 }

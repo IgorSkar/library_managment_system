@@ -88,7 +88,8 @@ public class LoanDAOImpl implements LoanDAO {
 
         jdbcTemplate.update("DELETE FROM book_queue WHERE customer_id = ?", customer.getCustomer_id());
 
-         emailSender.send(customer.getEmail(), "Hej! Boken är reserverat åt dig: dags att hämta:");
+        //Provided String Required Customer
+         emailSender.send(customer); //"Hej! Boken är reserverat åt dig: dags att hämta:");
 
 
         return succeed >= 1;
@@ -179,8 +180,7 @@ public class LoanDAOImpl implements LoanDAO {
                     rowSet.getString("return_date")
             ));
         }
-        return output;}
-
-
+        return output;
     }
+}
 

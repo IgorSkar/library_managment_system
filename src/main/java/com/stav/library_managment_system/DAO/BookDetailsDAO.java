@@ -25,4 +25,6 @@ BookDetailsDAO {
 
     boolean addBook(JSONObject object);
 
+    boolean addBook (String title, String description, String authors, String genres, String isbn, String published, int page_count, String language, String image);
+
 }

@@ -1,7 +1,11 @@
 package com.stav.library_managment_system;
+import com.stav.library_managment_system.DAO.BookDAO;
+import com.stav.library_managment_system.DAO.Book_QueueDAO;
 import com.stav.library_managment_system.DAO.CustomerDAO;
 import com.stav.library_managment_system.DAO.LoanDAO;
 import com.stav.library_managment_system.Email.EmailSender;
+import com.stav.library_managment_system.Models.Book;
+import com.stav.library_managment_system.Models.Book_Queue;
 import com.stav.library_managment_system.Models.Customer;
 import com.stav.library_managment_system.Models.Loan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +20,22 @@ import java.util.List;
 
 @Configuration
 @EnableScheduling
-
 public class appConfigration {
-  @Autowired
+    @Autowired
     private LoanDAO loanDAO;
-  @Autowired
-  private CustomerDAO customerDAO;
-  @Autowired
-  private EmailSender emailSender;
-  @Autowired
+    @Autowired
+    private CustomerDAO customerDAO;
+    @Autowired
+    private EmailSender emailSender;
+    @Autowired
+    private BookDAO bookDAO;
+    @Autowired
+    private Book_QueueDAO book_queueDAO;
 
-   // @Scheduled(cron = "0/1440 *  * * * *")
     @Scheduled(fixedRateString = "${email.schedule.time}")
     public void sendSimpleEmail(){
+      // System.out.println(" Send email to User ");
+    //   kolla dagens datum och imorgons datum.
       Date dt = new Date();
       Calendar c = Calendar.getInstance();
       c.setTime(dt);
@@ -36,19 +43,22 @@ public class appConfigration {
       dt = c.getTime();
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
       String tomorrow =  sdf.format(dt);
-
+      // hämta alla loan som ska lämnas imorgon
       List<Loan> loansDueTomorrow = loanDAO.getLoansDueWithinDate(tomorrow);
         System.out.println(loansDueTomorrow.size());
 
-         List<String> emails = new ArrayList<>();
+          // hämta alla emails  för  låntagare
+         List<Customer> customers = new ArrayList<>();
          loansDueTomorrow.forEach(loan -> {
              Customer customer= customerDAO.getById(loan.getCustomer_id());
-           emails.add(customer.getEmail());
+           customers.add(customer);
              System.out.println(customer.getEmail());
 
          } );
-         emails.forEach(to -> {
-            emailSender.send(to,  "Snart går lånetiden ut på följande böcker:Return material on loan before the period expires:");
+
+        // skicka email dessa email
+         customers.forEach(to ->{
+            emailSender.send(to);
              System.out.println("email send successfully!");
 
          });
@@ -56,8 +66,5 @@ public class appConfigration {
 
 
     }
-
-
-
 
 }
