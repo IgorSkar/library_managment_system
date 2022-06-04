@@ -19,6 +19,7 @@ public class Customer {
     private String last_name;
     private String email;
     private String password;
+    private  String salt;
 
     }
 
