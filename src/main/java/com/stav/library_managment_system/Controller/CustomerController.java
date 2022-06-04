@@ -68,10 +68,10 @@ public class CustomerController {
     public Customer isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
         return customerDAO.isValidCustomer(email, password);
     }
-
+    /*
     @GetMapping("getCustomerByEmail")
     public Customer getCustomerByEmail(@RequestParam() String email){
         return customerDAO.getByEmail(email);
     }
-
+     */
 }

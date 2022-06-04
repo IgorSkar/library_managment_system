@@ -14,6 +14,4 @@ public class LibraryManagmentSystemApplication extends SpringBootServletInitiali
         ApplicationContext context = SpringApplication.run(LibraryManagmentSystemApplication.class, args);
     }
 
-
-
 }

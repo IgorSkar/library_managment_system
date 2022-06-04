@@ -149,8 +149,7 @@ public class LoanDAOImpl implements LoanDAO {
                     rowSet.getString("return_date")
             ));
         }
-        return output;}
-
-
+        return output;
     }
+}
 

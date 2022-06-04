@@ -4,70 +4,77 @@ import com.stav.library_managment_system.DAO.Book_QueueDAO;
 import com.stav.library_managment_system.DAO.CustomerDAO;
 import com.stav.library_managment_system.DAO.LoanDAO;
 import com.stav.library_managment_system.Email.EmailSender;
-import com.stav.library_managment_system.Models.Book;
-import com.stav.library_managment_system.Models.Book_Queue;
-import com.stav.library_managment_system.Models.Customer;
-import com.stav.library_managment_system.Models.Loan;
+import com.stav.library_managment_system.Models.*;
+import org.apache.tomcat.util.threads.ScheduledThreadPoolExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.Trigger;
+import org.springframework.scheduling.TriggerContext;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableScheduling
-
 public class appConfigration {
-  @Autowired
+    @Autowired
     private LoanDAO loanDAO;
-  @Autowired
-  private CustomerDAO customerDAO;
-  @Autowired
-  private EmailSender emailSender;
-  @Autowired
-  private BookDAO bookDAO;
-  @Autowired
-  private Book_QueueDAO book_queueDAO;
+    @Autowired
+    private CustomerDAO customerDAO;
+    @Autowired
+    private EmailSender emailSender;
+    @Autowired
+    private BookDAO bookDAO;
+    @Autowired
+    private Book_QueueDAO book_queueDAO;
 
-    @Scheduled(fixedRateString = "${email.schedule.time}")
-    public void sendSimpleEmail(){
-      // System.out.println(" Send email to User ");
-    //   kolla dagens datum och imorgons datum.
-      Date dt = new Date();
-      Calendar c = Calendar.getInstance();
-      c.setTime(dt);
-      c.add(Calendar.DATE, 1);
-      dt = c.getTime();
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-      String tomorrow =  sdf.format(dt);
-      // hämta alla loan som ska lämnas imorgon
-      List<Loan> loansDueTomorrow = loanDAO.getLoansDueWithinDate(tomorrow);
+    private Date dt = new Date();
+
+    @Scheduled(fixedRateString = "${T.schedule}")
+    public void sendSimpleEmail() {
+        // System.out.println(" Send email to User ");
+        //   kolla dagens datum och imorgons datum.
+        Date dt = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.add(Calendar.DATE, 1);
+        dt = c.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String tomorrow =  sdf.format(dt);
+        // hämta alla loan som ska lämnas imorgon
+        List<Loan> loansDueTomorrow = loanDAO.getLoansDueWithinDate(tomorrow);
         System.out.println(loansDueTomorrow.size());
 
-          // hämta alla emails  för  låntagare
-         List<String> emails = new ArrayList<>();
-         loansDueTomorrow.forEach(loan -> {
-             Customer customer= customerDAO.getById(loan.getCustomer_id());
-           emails.add(customer.getEmail());
-             System.out.println(customer.getEmail());
+        // hämta alla emails  för  låntagare
+        List<Customer> customers = new ArrayList<>();
+        List<BookDetails> bookDetails1 = new ArrayList<>();
+        loansDueTomorrow.forEach(loan -> {
+            Customer customer= customerDAO.getById(loan.getCustomer_id());
+            customers.add(customer);
+            bookDetails1.add();
+            System.out.println(customer.getEmail());
 
-         } );
+        } );
 
         // skicka email dessa email
-         emails.forEach(to ->{
-            emailSender.send(to,"Hej det är dags att lämna boken du har!" );
-             System.out.println("email send successfully!");
+        customers.forEach(to -> {
+            emailSender.send(to);
+            System.out.println("email send successfully!");
 
-         });
-
-
+        });
 
     }
-
+}
       /* @Scheduled(cron = "0/15 *  * * * *")
        public  void  fetchDBJob(){
 
@@ -104,6 +111,3 @@ public class appConfigration {
        }
 
        */
-
-
-}
