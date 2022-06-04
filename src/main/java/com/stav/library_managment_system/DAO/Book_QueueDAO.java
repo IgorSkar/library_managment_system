@@ -30,4 +30,6 @@ public interface Book_QueueDAO {
      int getAmountInQueue(String ISBN);
 
      List<Book_Queue> getReservedBooks(int customerId);
+
+   boolean checkReservationsForBook(int bookId);
 }
