@@ -22,7 +22,8 @@ public class LibraryDAOImpl implements LibraryDAO {
 
     @Override
     public Library getLibraryById(int libraryId)  throws DataAccessException {
-        return jdbcTemplate.queryForObject("SELECT * FROM libraries WHERE library_id=?",new BeanPropertyRowMapper<Library>(Library.class),libraryId);
+        Library l = jdbcTemplate.queryForObject("SELECT * FROM libraries WHERE library_id=?",new BeanPropertyRowMapper<Library>(Library.class),libraryId);
+        return l;
     }
 
     @Override

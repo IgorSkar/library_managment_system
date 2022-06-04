@@ -28,8 +28,8 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public Customer getById(int customerId) throws DataAccessException {
-        Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id=? ", new BeanPropertyRowMapper<Customer>(Customer.class), customerId);
-        return customer;
+        Customer c = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id=? ", new BeanPropertyRowMapper<Customer>(Customer.class), customerId);
+        return c;
     }
 
 
@@ -82,6 +82,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public Customer getByEmail(String email){
         Customer c = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email=?", new BeanPropertyRowMapper<Customer>(Customer.class), email);
+        System.out.println("Customer in backend = " + c);
         return c;
     }
 
