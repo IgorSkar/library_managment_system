@@ -1,20 +1,16 @@
 package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.EmployeeDAO;
-import com.stav.library_managment_system.Models.Customer;
 import com.stav.library_managment_system.Models.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +19,6 @@ import java.util.Map;
 public class EmployeeDAOImpl implements EmployeeDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    //private SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("scanUserNamePassword");
 
     @Override
     public List<Employee> getAllEmployees() {
@@ -45,6 +39,18 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         inParams.put("username", email);
         inParams.put("password", password);
         inParams.put("role", role);
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        Map map = jdbcCall.execute(in);
+        return (int) map.get("succeed") >= 1;
+    }
+
+
+    public boolean isValidEmployee (String email, String password){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("employee_authenticator");
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("username", email);
+        inParams.put("userpassword", password);
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map map = jdbcCall.execute(in);
@@ -75,17 +81,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         return employee;
     }
 
-   @Override
-    public Employee isValidEmployee(String email, String password) {
-       String query = "SELECT * FROM employees WHERE email =? AND password =?";
-       try {
-           Employee employee = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Employee.class), email, password);
-           System.out.println("This is what we get in backend from Database: " + employee.toString());
-           return employee;
-       }catch(EmptyResultDataAccessException e){
-           return null;
-       }
-   }
+
 }
 
 

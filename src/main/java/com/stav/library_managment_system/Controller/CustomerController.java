@@ -64,15 +64,15 @@ public class CustomerController {
 
 
     @GetMapping("/login")
-    public Customer isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
+    public boolean isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
         return customerDAO.isValidCustomer(email, password);
     }
 
-   /* @GetMapping("getCustomerByEmail")
+    @GetMapping("getCustomerByEmail")
     public Customer getCustomerByEmail(@RequestParam() String email){
         return customerDAO.getByEmail(email);
     }
 
-    */
+
 
 }

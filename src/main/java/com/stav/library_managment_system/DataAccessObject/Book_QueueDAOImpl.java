@@ -67,6 +67,11 @@ public class Book_QueueDAOImpl implements Book_QueueDAO {
     public List<Book_Queue> getReservedBooks(int customerId) {
         return jdbcTemplate.query("SELECT * FROM book_queue WHERE customer_id=? ",new BeanPropertyRowMapper<Book_Queue>(Book_Queue.class), customerId);
     }
+
+    @Override
+    public boolean checkReservationsForBook(int bookId) {
+        return false;
+    }
 }
 
 
