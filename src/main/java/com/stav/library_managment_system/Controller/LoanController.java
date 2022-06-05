@@ -1,5 +1,6 @@
 package com.stav.library_managment_system.Controller;
-
+import com.stav.library_managment_system.DAO.Book_QueueDAO;
+import com.stav.library_managment_system.DAO.CustomerDAO;
 import com.stav.library_managment_system.DAO.LoanDAO;
 import com.stav.library_managment_system.Models.Loan;
 import org.json.JSONObject;
@@ -18,6 +19,10 @@ import java.util.List;
 public class LoanController {
     @Autowired
     private LoanDAO loanDAO;
+    @Autowired
+    private Book_QueueDAO book_queueDAO;
+    @Autowired
+    private CustomerDAO customerDAO;
 
 
     @GetMapping
@@ -46,9 +51,12 @@ public class LoanController {
          return new ResponseEntity<Loan>(loan,HttpStatus.OK);
     }
 
+
     @GetMapping("return_book/{book_id}")
-    public boolean returnBook(@PathVariable("book_id") int bookId){
-         return loanDAO.returnBook(bookId);
+    public boolean returnBook(@PathVariable("book_id") int bookId) {
+
+        boolean result = loanDAO.returnBook(bookId);
+        return result;
     }
 
     @PostMapping("loan")

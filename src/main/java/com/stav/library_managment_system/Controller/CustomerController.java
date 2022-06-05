@@ -32,7 +32,7 @@ public class CustomerController {
         return  new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }
       @GetMapping("/firstName")
-    public  ResponseEntity<?> getCustomerByFirstName(@RequestParam String firstName){
+    public ResponseEntity<?> getCustomerByFirstName(@RequestParam String firstName){
         Customer customer= null;
         try {
             customer = customerDAO.getByFirstName(firstName);
@@ -48,7 +48,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{customerId}")
-    public  ResponseEntity<?> updateCustomer(@RequestBody Customer customer, @PathVariable int customerId){
+    public ResponseEntity<?> updateCustomer(@RequestBody Customer customer, @PathVariable int customerId){
         int result = customerDAO.update(customer,customerId);
         return  new ResponseEntity<String>("customer updated successfully!", HttpStatus.OK);
     }
@@ -63,7 +63,7 @@ public class CustomerController {
 
 
     @GetMapping("/login")
-    public Customer isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
+    public boolean isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
         return customerDAO.isValidCustomer(email, password);
     }
 

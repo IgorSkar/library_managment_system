@@ -1,8 +1,8 @@
 package com.stav.library_managment_system.DataAccessObject;
+import com.stav.library_managment_system.DAO.Book_QueueDAO;
 import com.stav.library_managment_system.DAO.LoanDAO;
-import com.stav.library_managment_system.Models.Book;
-import com.stav.library_managment_system.Models.BookDetails;
-import com.stav.library_managment_system.Models.Loan;
+import com.stav.library_managment_system.Email.EmailSender;
+import com.stav.library_managment_system.Models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,6 +22,8 @@ public class LoanDAOImpl implements LoanDAO {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private EmailSender emailSender;
 
     /**
      *
@@ -60,10 +62,39 @@ public class LoanDAOImpl implements LoanDAO {
         return loan;
     }
 
+
     public boolean returnBook(int bookId){
         String query = "DELETE FROM loans WHERE book_id=?";
-        return jdbcTemplate.update(query, bookId) >= 1;
+
+        Book book = jdbcTemplate.queryForObject("SELECT * FROM `books` WHERE book_id = ?", new BeanPropertyRowMapper<>(Book.class), bookId);
+        System.out.println("Tjenare " + book.getIsbn());
+
+        Book_Queue queue = jdbcTemplate.queryForObject("SELECT  * FROM book_queue WHERE isbn = ? ORDER BY queue_date ASC LIMIT 1", new BeanPropertyRowMapper<>(Book_Queue.class), book.getIsbn());
+
+        int returnBookSucceed = jdbcTemplate.update(query, bookId);
+
+        if(queue == null){
+            return returnBookSucceed >= 1;
+
+        }
+
+        Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id = ?", new BeanPropertyRowMapper<>(Customer.class), queue.getCustomer_id());
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar loandDate = Calendar.getInstance();
+        loandDate.setTime(new Date());
+        Calendar returnDate = (Calendar) loandDate.clone();
+        returnDate.add(Calendar.MONTH, 1);
+        int succeed = jdbcTemplate.update("INSERT INTO loans(book_id, customer_id, loan_date, return_date) VALUES(?,?,?,?)", book.getBook_id(), customer.getCustomer_id(), date.format(loandDate.getTime()), date.format(returnDate.getTime()));
+
+        jdbcTemplate.update("DELETE FROM book_queue WHERE customer_id = ?", customer.getCustomer_id());
+
+        //Provided String Required Customer
+         emailSender.send(customer); //"Hej! Boken är reserverat åt dig: dags att hämta:");
+
+
+        return succeed >= 1;
     }
+
 
     public boolean loanBook(String isbn, int customerId, int libraryId){
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("loan_book");
@@ -149,8 +180,7 @@ public class LoanDAOImpl implements LoanDAO {
                     rowSet.getString("return_date")
             ));
         }
-        return output;}
-
-
+        return output;
     }
+}
 

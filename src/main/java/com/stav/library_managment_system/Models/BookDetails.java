@@ -2,9 +2,10 @@ package com.stav.library_managment_system.Models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Data
-
+@Component
 @NoArgsConstructor
 public class BookDetails {
 
