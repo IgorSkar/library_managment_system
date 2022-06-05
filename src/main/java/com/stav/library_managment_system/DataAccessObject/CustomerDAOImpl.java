@@ -21,17 +21,6 @@ public class CustomerDAOImpl implements CustomerDAO {
     private JdbcTemplate jdbcTemplate;
 
 
-
-    @Override
-    public Customer isValidCustomer(String email, String password) {
-        String query = "SELECT * FROM customers WHERE email =? AND password =?";
-        try {
-            Customer customer = jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Customer.class), email, password);
-            return customer;
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
     @Override
     public List<Customer> findAll() {
         return jdbcTemplate.query("SELECT * FROM customers", new BeanPropertyRowMapper<Customer>(Customer.class));
@@ -39,25 +28,38 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public Customer getById(int customerId) throws DataAccessException {
-        Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id=? ", new BeanPropertyRowMapper<Customer>(Customer.class), customerId);
-        return customer;
+        Customer c = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id=? ", new BeanPropertyRowMapper<Customer>(Customer.class), customerId);
+        return c;
     }
 
-    public boolean createCustomer(String firstName, String lastName, String mail, String password){
+
+    public boolean createCustomer(String first_name, String last_name, String email, String password){
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("create_customer");
         Map<String, String> inParams = new HashMap<>();
-        inParams.put("first_name", firstName);
-        inParams.put("last_name", lastName);
-        inParams.put("email", mail);
+        inParams.put("first_name", first_name);
+        inParams.put("last_name", last_name);
+        inParams.put("username", email);
         inParams.put("password", password);
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         return (int) jdbcCall.execute(in).get("succeed") >= 1;
     }
 
+
+    public boolean isValidCustomer( String email, String password){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("authenticator");
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("username", email);
+        inParams.put("userpassword", password);
+
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        return (int) jdbcCall.execute(in).get("succeed") >= 1;
+    }
+
+
     @Override
     public int save(Customer customer) {
-        return jdbcTemplate.update("INSERT INTO customers (first_name, last_name, email, password) VALUES (?, ?, ?, ?)", new Object[]{customer.getFirst_name(), customer.getLast_name(), customer.getEmail(), customer.getPassword()});
+        return jdbcTemplate.update("INSERT INTO customers (first_name, last_name, email, password) VALUES (?, ?, ?, ?)", new Object[]{customer.getFirst_name() ,customer.getLast_name(), customer.getEmail(), customer.getPassword()});
     }
 
     @Override
@@ -80,6 +82,7 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public Customer getByEmail(String email){
         Customer c = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE email=?", new BeanPropertyRowMapper<Customer>(Customer.class), email);
+        System.out.println("Customer in backend = " + c);
         return c;
     }
 

@@ -20,18 +20,17 @@ import java.util.List;
 
 @Configuration
 @EnableScheduling
-
 public class appConfigration {
-  @Autowired
+    @Autowired
     private LoanDAO loanDAO;
-  @Autowired
-  private CustomerDAO customerDAO;
-  @Autowired
-  private EmailSender emailSender;
-  @Autowired
-  private BookDAO bookDAO;
-  @Autowired
-  private Book_QueueDAO book_queueDAO;
+    @Autowired
+    private CustomerDAO customerDAO;
+    @Autowired
+    private EmailSender emailSender;
+    @Autowired
+    private BookDAO bookDAO;
+    @Autowired
+    private Book_QueueDAO book_queueDAO;
 
     @Scheduled(fixedRateString = "${email.schedule.time}")
     public void sendSimpleEmail(){
@@ -49,17 +48,17 @@ public class appConfigration {
         System.out.println(loansDueTomorrow.size());
 
           // hämta alla emails  för  låntagare
-         List<String> emails = new ArrayList<>();
+         List<Customer> customers = new ArrayList<>();
          loansDueTomorrow.forEach(loan -> {
              Customer customer= customerDAO.getById(loan.getCustomer_id());
-           emails.add(customer.getEmail());
+           customers.add(customer);
              System.out.println(customer.getEmail());
 
          } );
 
         // skicka email dessa email
-         emails.forEach(to ->{
-            emailSender.send(to,"Hej det är dags att lämna boken du har!" );
+         customers.forEach(to ->{
+            emailSender.send(to);
              System.out.println("email send successfully!");
 
          });
@@ -67,43 +66,5 @@ public class appConfigration {
 
 
     }
-
-      /* @Scheduled(cron = "0/15 *  * * * *")
-       public  void  fetchDBJob(){
-
-           // kolla om isbn boken finns i databasen i books tabelen
-
-           List<Book>  getBooksWithISBN = bookDAO.getBookByISBN();
-           System.out.println(" retrieve books by ISBN from database at:" + getBooksWithISBN);
-
-           // kolla om det finns  flera customer som står kö för boken
-
-           List<Book_Queue>  getReservationWithAllCustomer = book_queueDAO.isInQueue();
-           System.out.println("fetched reservations with customer from database at: " + new Date().toString() + getReservationWithAllCustomer);
-           System.out.println("number of queues:" + getReservationWithAllCustomer.size());
-
-
-
-           // ge boken den som har reserverat först genom att kolla tiden
-              // hur ska jag dubbelkolla tiden den som har reserverat först
-
-           List<String> emails = new ArrayList<>();
-           getReservationWithAllCustomer.forEach(book_Queue -> {
-               Customer customer= customerDAO.getById(book_Queue.getCustomer_id());
-               emails.add(customer.getEmail());
-               System.out.println(customer.getEmail());
-
-           } );
-
-           // maila den customer som ska få boken
-           emails.forEach(to ->{
-               emailSender.send(to,"Hej boken du reserverade  är nu tillgänglig att hämta!" );
-               System.out.println("email send successfully!");
-
-           });
-       }
-
-       */
-
 
 }
