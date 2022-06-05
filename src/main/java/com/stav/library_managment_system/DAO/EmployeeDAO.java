@@ -16,7 +16,7 @@ public interface EmployeeDAO {
 
      boolean createEmployee(String firstName, String lastName, String email, String password, String role);
 
-     boolean isValidEmployee(String email, String password);
+     Employee isValidEmployee(String email, String password);
 
     int save (Employee employee);
 

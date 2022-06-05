@@ -1,11 +1,9 @@
 package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.BookDetailsDAO;
-import com.stav.library_managment_system.Models.Book;
 import com.stav.library_managment_system.Models.BookDetails;
 import com.stav.library_managment_system.google.GoogleAPI;
 import com.stav.library_managment_system.utils.StringUtil;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
