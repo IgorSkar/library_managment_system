@@ -16,9 +16,8 @@ public class CustomerController {
     @Autowired
     private CustomerDAO customerDAO;
 
-    @GetMapping
+    @GetMapping("/findAll")
     public List<Customer> findAll() {
-
         return customerDAO.findAll();
     }
 
@@ -68,11 +67,11 @@ public class CustomerController {
         return customerDAO.isValidCustomer(email, password);
     }
 
-   /* @GetMapping("getCustomerByEmail")
+    @GetMapping("getCustomerByEmail")
     public Customer getCustomerByEmail(@RequestParam() String email){
         return customerDAO.getByEmail(email);
     }
 
-    */
+
 
 }

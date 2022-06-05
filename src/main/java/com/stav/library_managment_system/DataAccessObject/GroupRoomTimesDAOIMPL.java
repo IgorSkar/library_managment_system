@@ -1,6 +1,8 @@
 package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.GroupRoomTimesDAO;
+import com.stav.library_managment_system.Models.Customer;
+import com.stav.library_managment_system.Models.CustomersWithGroupRooms;
 import com.stav.library_managment_system.Models.GroupRoomTime;
 import org.json.JSONObject;
 import com.stav.library_managment_system.Models.GroupRoomTime;
@@ -40,6 +42,12 @@ public class GroupRoomTimesDAOIMPL implements GroupRoomTimesDAO {
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map m = jdbcCall.execute(in);
         return (ArrayList<GroupRoomTime>) m.get("return");
+    }
+
+    public List<CustomersWithGroupRooms> allRoomBookings(){
+        List<CustomersWithGroupRooms> data = jdbcTemplate.query("SELECT * FROM library_management_system.customers_with_group_rooms;", new BeanPropertyRowMapper<CustomersWithGroupRooms>(CustomersWithGroupRooms.class));
+        System.out.println("Full list in backend NOW: " + data);
+        return data;
     }
 
     public boolean book(int timeId, int customerId) {

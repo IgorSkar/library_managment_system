@@ -1,5 +1,6 @@
 package com.stav.library_managment_system.DAO;
 
+import com.stav.library_managment_system.Models.CustomersWithGroupRooms;
 import com.stav.library_managment_system.Models.GroupRoomTime;
 import org.json.JSONObject;
 import com.stav.library_managment_system.Models.GroupRoomTime;
@@ -11,6 +12,8 @@ public interface GroupRoomTimesDAO {
     List<GroupRoomTime> groupRoomTimes();
 
     List<GroupRoomTime> getAvailableTimesById(int roomId);
+
+    List<CustomersWithGroupRooms> allRoomBookings();
 
     boolean book(int timeId, int customerId);
 
