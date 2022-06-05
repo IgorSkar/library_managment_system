@@ -24,19 +24,6 @@ import javax.mail.internet.MimeMessage;
 @AllArgsConstructor
 public class EmailService implements EmailSender{
 
-    @Autowired
-    private CustomerDAO customerDAO;
-    @Autowired
-    private LoanDAO loanDAO;
-    @Autowired
-    private Loan loan;
-    @Autowired
-    private BookDAO bookDAO;
-    @Autowired
-    private Book book;
-    @Autowired
-    private BookDetails bookDetails;
-
     private final static Logger LOGGER = LoggerFactory
             .getLogger(EmailService.class);
 
