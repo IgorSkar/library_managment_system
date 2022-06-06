@@ -72,6 +72,4 @@ public class CustomerController {
         return customerDAO.getByEmail(email);
     }
 
-
-
 }

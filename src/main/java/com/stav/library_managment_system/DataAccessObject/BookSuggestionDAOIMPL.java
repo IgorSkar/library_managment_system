@@ -23,13 +23,13 @@ public class BookSuggestionDAOIMPL implements BookSuggestionDAO {
     }
 
     @Override
-    public int add(BookSuggestion bookSuggestion) {
-        return jdbcTemplate.update("INSERT INTO book_suggestion(isbn, title, author, language) VALUES(?,?,?,?)", new Object[]{bookSuggestion.getIsbn(), bookSuggestion.getTitle(), bookSuggestion.getAuthor(), bookSuggestion.getLanguage()});
+    public boolean add(String title, String authors, String isbn, String language) {
+        return jdbcTemplate.update("INSERT INTO book_suggestion(title, authors, isbn, language) VALUES(?,?,?,?)", title, authors, isbn, language) >= 1;
     }
 
     @Override
-    public void deleteById(int book_suggestion_id) {
-        jdbcTemplate.update("DELETE FROM book_suggestion WHERE book_suggestion_id=?", book_suggestion_id);
+    public boolean deleteById(int book_suggestion_id) {
+        return jdbcTemplate.update("DELETE FROM book_suggestion WHERE book_suggestion_id=?", book_suggestion_id) >= 1;
     }
 
 }

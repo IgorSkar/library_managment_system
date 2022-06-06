@@ -82,7 +82,6 @@ public class LoanDAOImpl implements LoanDAO {
 
         if(queue == null){
             return returnBookSucceed >= 1;
-
         }
 
         Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id = ?", new BeanPropertyRowMapper<>(Customer.class), queue.getCustomer_id());

@@ -13,6 +13,8 @@ public interface GroupRoomTimesDAO {
 
     List<GroupRoomTime> getAvailableTimesById(int roomId);
 
+    List<JSONObject> getBookedTimes(int roomId);
+
     List<CustomersWithGroupRooms> allRoomBookings();
 
     boolean book(int timeId, int customerId);

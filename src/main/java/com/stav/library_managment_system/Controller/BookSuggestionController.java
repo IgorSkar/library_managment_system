@@ -10,31 +10,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/booksuggestion")
+@RequestMapping("/api/book_suggestions")
 public class BookSuggestionController {
 
     @Autowired
     private BookSuggestionDAO bookSuggestionDAO;
 
-    @GetMapping("/all")
+    @GetMapping
     public List<BookSuggestion> getBookSuggestion() {
         return bookSuggestionDAO.getBookSuggestion();
     }
 
-    @PostMapping()
-    public ResponseEntity<?> addBookSuggestion(@RequestBody BookSuggestion bookSuggestion) {
-        int result = bookSuggestionDAO.add(bookSuggestion);
-        if (result == -1) {
-            return new ResponseEntity<String>("Something was wrong", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<String>(" BookSuggestion added successfully!", HttpStatus.CREATED);
+    @GetMapping("suggest")
+    public boolean addBookSuggestion(@RequestParam String title, @RequestParam String authors, @RequestParam String isbn, @RequestParam String language) {
+        return bookSuggestionDAO.add(title, authors, isbn, language);
     }
 
 
-    @DeleteMapping("/{book_suggestion_id}")
-    public ResponseEntity<?> deleteBookSuggestionById(@PathVariable int book_suggestion_id) {
-        bookSuggestionDAO.deleteById(book_suggestion_id);
-        return new ResponseEntity<String>("Book suggestion deleted successfully!", HttpStatus.OK);
+    @GetMapping("remove/{id}")
+    public boolean deleteBookSuggestionById(@PathVariable("id") int bookSuggestionId) {
+        return bookSuggestionDAO.deleteById(bookSuggestionId);
     }
 
 
