@@ -16,9 +16,8 @@ public class CustomerController {
     @Autowired
     private CustomerDAO customerDAO;
 
-    @GetMapping
+    @GetMapping("/findAll")
     public List<Customer> findAll() {
-
         return customerDAO.findAll();
     }
 
@@ -33,7 +32,7 @@ public class CustomerController {
         return  new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }
       @GetMapping("/firstName")
-    public  ResponseEntity<?> getCustomerByFirstName(@RequestParam String firstName){
+    public ResponseEntity<?> getCustomerByFirstName(@RequestParam String firstName){
         Customer customer= null;
         try {
             customer = customerDAO.getByFirstName(firstName);
@@ -44,12 +43,12 @@ public class CustomerController {
     }
 
     @GetMapping("/create")
-    public boolean createCustomer(@RequestParam String first_name, @RequestParam String last_name, @RequestParam String email, @RequestParam String password){
-        return customerDAO.createCustomer(first_name, last_name, email, password);
+    public boolean createCustomer(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String mail, @RequestParam String password){
+        return customerDAO.createCustomer(firstName, lastName, mail, password);
     }
 
     @PutMapping("/{customerId}")
-    public  ResponseEntity<?> updateCustomer(@RequestBody Customer customer, @PathVariable int customerId){
+    public ResponseEntity<?> updateCustomer(@RequestBody Customer customer, @PathVariable int customerId){
         int result = customerDAO.update(customer,customerId);
         return  new ResponseEntity<String>("customer updated successfully!", HttpStatus.OK);
     }
@@ -64,7 +63,7 @@ public class CustomerController {
 
 
     @GetMapping("/login")
-    public boolean isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
+    public Customer isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
         return customerDAO.isValidCustomer(email, password);
     }
 
@@ -72,7 +71,5 @@ public class CustomerController {
     public Customer getCustomerByEmail(@RequestParam() String email){
         return customerDAO.getByEmail(email);
     }
-
-
 
 }

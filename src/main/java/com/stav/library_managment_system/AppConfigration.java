@@ -1,26 +1,18 @@
 package com.stav.library_managment_system;
-import com.stav.library_managment_system.DAO.BookDAO;
-import com.stav.library_managment_system.DAO.Book_QueueDAO;
-import com.stav.library_managment_system.DAO.CustomerDAO;
-import com.stav.library_managment_system.DAO.LoanDAO;
+import com.stav.library_managment_system.DAO.*;
 import com.stav.library_managment_system.Email.EmailSender;
-import com.stav.library_managment_system.Models.Book;
-import com.stav.library_managment_system.Models.Book_Queue;
-import com.stav.library_managment_system.Models.Customer;
-import com.stav.library_managment_system.Models.Loan;
+import com.stav.library_managment_system.Models.*;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Configuration
 @EnableScheduling
-public class appConfigration {
+public class AppConfigration {
     @Autowired
     private LoanDAO loanDAO;
     @Autowired
@@ -29,8 +21,6 @@ public class appConfigration {
     private EmailSender emailSender;
     @Autowired
     private BookDAO bookDAO;
-    @Autowired
-    private Book_QueueDAO book_queueDAO;
 
     @Scheduled(fixedRateString = "${email.schedule.time}")
     public void sendSimpleEmail(){
@@ -47,24 +37,25 @@ public class appConfigration {
       List<Loan> loansDueTomorrow = loanDAO.getLoansDueWithinDate(tomorrow);
         System.out.println(loansDueTomorrow.size());
 
-          // hämta alla emails  för  låntagare
+        HashMap<Customer, String> toSend = new HashMap<>();
+
+          // hämta alla låntagare
          List<Customer> customers = new ArrayList<>();
          loansDueTomorrow.forEach(loan -> {
-             Customer customer= customerDAO.getById(loan.getCustomer_id());
+             Customer customer = customerDAO.getById(loan.getCustomer_id());
            customers.add(customer);
+           toSend.put(customer, "Hej " + customer.getFirst_name() + " " + customer.getLast_name() + "! Hoppas allt är bra med dig. " +
+                   "Vi på Stav Biblioteket tar hand om våra låntagare och vill därför skicka en påminnelse till dig att snart är din låneperiod för " + bookDAO.getBookById(loan.getBook_id()).getString("title") + " med ISBN "+ bookDAO.getBookById(loan.getBook_id()).getString("isbn") + //bokens titel och kanske isbn
+                   " som du lånaden den "+ loan.getLoan_date() + " börjar gå mot sitt slut. Lämna gärna tillbaka boken snarast, din låneperiod slutar den " + loan.getReturn_date() + //return_date
+                   ". Vi är tacksamma att ni valde att låna böcker hos oss på Stav Bibliotek. Ni är alltid välkommna tillbaka!");
              System.out.println(customer.getEmail());
-
-         } );
-
-        // skicka email dessa email
-         customers.forEach(to ->{
-            emailSender.send(to);
-             System.out.println("email send successfully!");
-
+             System.out.println(loan.getReturn_date());
          });
 
-
-
+        // skicka email dessa email
+         toSend.forEach((customer, s) ->{
+             emailSender.send(customer, s);
+         });
     }
 
 }

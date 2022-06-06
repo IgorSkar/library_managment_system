@@ -1,12 +1,10 @@
 package com.stav.library_managment_system.Email;
 
 
-import com.stav.library_managment_system.DAO.BookDAO;
-import com.stav.library_managment_system.DAO.CustomerDAO;
 import com.stav.library_managment_system.DAO.LoanDAO;
-import com.stav.library_managment_system.Models.Book;
-import com.stav.library_managment_system.Models.BookDetails;
+import com.stav.library_managment_system.DataAccessObject.LoanDAOImpl;
 import com.stav.library_managment_system.Models.Customer;
+import com.stav.library_managment_system.AppConfigration;
 import com.stav.library_managment_system.Models.Loan;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -19,23 +17,15 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class EmailService implements EmailSender{
-
-    @Autowired
-    private CustomerDAO customerDAO;
-    @Autowired
-    private LoanDAO loanDAO;
     @Autowired
     private Loan loan;
-    @Autowired
-    private BookDAO bookDAO;
-    @Autowired
-    private Book book;
-    @Autowired
-    private BookDetails bookDetails;
+
 
     private final static Logger LOGGER = LoggerFactory
             .getLogger(EmailService.class);
@@ -44,16 +34,14 @@ public class EmailService implements EmailSender{
 
     @Override
     @Async
-    public void send(Customer customer) {
+    public void send(Customer customer, String text) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper =
                     new MimeMessageHelper(mimeMessage, "utf-8");
-            helper.setText("Hej " + customer.getFirst_name() + "! Hoppas allt är bra med dig," +
-                    "vi på Stav Biblioteket ville meddela dig om att din låneperiod för " +
-                    "börjar gå mot sitt slut. Lämna gärna tillbaka boken senast ",true);
+            helper.setText(text,true);
             helper.setTo(customer.getEmail());
-            helper.setSubject("Loan period is over!");
+            helper.setSubject("Stav Bibliotek");
             helper.setFrom("librarystav.22@gmail.com");
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {

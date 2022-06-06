@@ -1,11 +1,9 @@
 package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.BookDetailsDAO;
-import com.stav.library_managment_system.Models.Book;
 import com.stav.library_managment_system.Models.BookDetails;
 import com.stav.library_managment_system.google.GoogleAPI;
 import com.stav.library_managment_system.utils.StringUtil;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -63,7 +61,7 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
                         (!releaseDate.equalsIgnoreCase("") ? !sdf.parse(o.getString("published")).before(sdf.parse(releaseDate)) : true) &&
                         (!library.equalsIgnoreCase("") ? Arrays.stream((String[]) o.get("available_libraries")).anyMatch(s -> s.equalsIgnoreCase(library)) : true) &&
                         (searchType.equalsIgnoreCase("titel") ||searchType.equalsIgnoreCase("") ? o.getString("title").toLowerCase().contains(search.toLowerCase()) : true) &&
-                        (searchType.equalsIgnoreCase("författare") ? Arrays.asList((String[]) o.get("authors")).isEmpty() ? true : Arrays.stream((String[]) o.get("authors")).anyMatch(s -> s.toLowerCase().contains(search.toLowerCase())) : true);
+                        (searchType.equalsIgnoreCase("författare") ? Arrays.asList((String[]) o.get("authors")).isEmpty() ? search.equals("") ? true : false : Arrays.stream((String[]) o.get("authors")).anyMatch(s -> s.toLowerCase().contains(search.toLowerCase())) : true);
             } catch (ParseException e) {
                 e.printStackTrace();
             }

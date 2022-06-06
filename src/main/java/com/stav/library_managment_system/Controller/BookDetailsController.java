@@ -27,18 +27,6 @@ public class BookDetailsController {
         return bookDetailsDAO.getBooksByGenre(genre.split(",")).toString();
     }
 
-    @GetMapping("123")
-    public ResponseEntity<?> getBookDetailsByTittle(@RequestParam String title) {
-        BookDetails bookDetails = null;
-        try {
-            bookDetails = bookDetailsDAO.getBookByTitle(title);
-        } catch (DataAccessException e) {
-            e.printStackTrace();
-            return new ResponseEntity<String>(" Book Title not found in database", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<BookDetails>(bookDetails, HttpStatus.OK);
-    }
-
     @GetMapping("/{isbn}")
     public String getBookDetailsByISBN(@PathVariable("isbn") String isbn) {
         return bookDetailsDAO.findByISBN(isbn).toString();

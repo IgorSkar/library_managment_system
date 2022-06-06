@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @SpringBootApplication
 public class LibraryManagmentSystemApplication extends SpringBootServletInitializer {
 
-
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(LibraryManagmentSystemApplication.class, args);
     }

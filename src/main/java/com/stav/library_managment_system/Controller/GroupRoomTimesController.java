@@ -1,6 +1,7 @@
 package com.stav.library_managment_system.Controller;
 
 import com.stav.library_managment_system.DAO.GroupRoomTimesDAO;
+import com.stav.library_managment_system.Models.CustomersWithGroupRooms;
 import com.stav.library_managment_system.Models.GroupRoomTime;
 import com.stav.library_managment_system.Models.GroupRoomTime;
 import org.json.JSONObject;
@@ -23,6 +24,16 @@ public class GroupRoomTimesController {
     @GetMapping("available_times/{id}")
     public List<GroupRoomTime> getAvailableTimesById(@PathVariable("id") int roomId){
         return groupRoomTimesDAO.getAvailableTimesById(roomId);
+    }
+
+    @GetMapping("booked_times/{id}")
+    public String getBookedTimes(@PathVariable("id") int roomId){
+        return groupRoomTimesDAO.getBookedTimes(roomId).toString();
+    }
+
+    @GetMapping("allRoomBookings")
+    public List<CustomersWithGroupRooms> allRoomBookings(){
+        return groupRoomTimesDAO.allRoomBookings();
     }
 
     @GetMapping("book")

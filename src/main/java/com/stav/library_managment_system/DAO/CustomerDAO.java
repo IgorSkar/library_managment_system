@@ -16,7 +16,7 @@ public interface CustomerDAO  {
 
    // Customer isValidCustomer(String email, String password);
 
-    boolean isValidCustomer(String email, String password);
+    Customer isValidCustomer(String email, String password);
 
     boolean createCustomer(String firstName, String lastName, String mail, String password);
 

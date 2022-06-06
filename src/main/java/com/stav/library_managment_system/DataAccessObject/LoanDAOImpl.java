@@ -1,5 +1,5 @@
 package com.stav.library_managment_system.DataAccessObject;
-import com.stav.library_managment_system.DAO.Book_QueueDAO;
+import com.stav.library_managment_system.DAO.BookDAO;
 import com.stav.library_managment_system.DAO.LoanDAO;
 import com.stav.library_managment_system.Email.EmailSender;
 import com.stav.library_managment_system.Models.*;
@@ -14,9 +14,13 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
+
+import java.awt.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
+
 @Repository
 public class LoanDAOImpl implements LoanDAO {
 
@@ -24,6 +28,8 @@ public class LoanDAOImpl implements LoanDAO {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private EmailSender emailSender;
+    @Autowired
+    private BookDAO bookDAO;
 
     /**
      *
@@ -58,47 +64,50 @@ public class LoanDAOImpl implements LoanDAO {
 
     @Override
     public Loan getById(int customerId, int bookId) throws DataAccessException {
-        Loan loan=  jdbcTemplate.queryForObject("SELECT * FROM loans WHERE customer_id=? AND book_id=?", new BeanPropertyRowMapper<Loan>(Loan.class),new Object[]{customerId,bookId});
+        Loan loan=  jdbcTemplate.queryForObject("SELECT * FROM loans WHERE customer_id=? AND book_id=?", new BeanPropertyRowMapper<>(Loan.class),new Object[]{customerId,bookId});
         return loan;
     }
 
 
     public boolean returnBook(int bookId){
+
         String query = "DELETE FROM loans WHERE book_id=?";
-
-        Book book = jdbcTemplate.queryForObject("SELECT * FROM `books` WHERE book_id = ?", new BeanPropertyRowMapper<>(Book.class), bookId);
-        System.out.println("Tjenare " + book.getIsbn());
-
-        Book_Queue queue = jdbcTemplate.queryForObject("SELECT  * FROM book_queue WHERE isbn = ? ORDER BY queue_date ASC LIMIT 1", new BeanPropertyRowMapper<>(Book_Queue.class), book.getIsbn());
 
         int returnBookSucceed = jdbcTemplate.update(query, bookId);
 
+        Book book = jdbcTemplate.queryForObject("SELECT * FROM `books` WHERE book_id = ?", new BeanPropertyRowMapper<>(Book.class), bookId);
+
+        int someoneInQueue = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM book_queue WHERE isbn = ?", Integer.class, book.getIsbn());
+
+        if(someoneInQueue == 0){
+            return returnBookSucceed >= 1;
+        }
+
+        Book_Queue queue = jdbcTemplate.queryForObject("SELECT * FROM book_queue WHERE isbn = ? ORDER BY queue_date ASC LIMIT 1", new BeanPropertyRowMapper<>(Book_Queue.class), book.getIsbn());
+
         if(queue == null){
             return returnBookSucceed >= 1;
-
         }
 
         Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id = ?", new BeanPropertyRowMapper<>(Customer.class), queue.getCustomer_id());
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar loandDate = Calendar.getInstance();
-        loandDate.setTime(new Date());
-        Calendar returnDate = (Calendar) loandDate.clone();
+        Calendar loanDate = Calendar.getInstance();
+        loanDate.setTime(new Date());
+        Calendar returnDate = (Calendar) loanDate.clone();
         returnDate.add(Calendar.MONTH, 1);
-        int succeed = jdbcTemplate.update("INSERT INTO loans(book_id, customer_id, loan_date, return_date) VALUES(?,?,?,?)", book.getBook_id(), customer.getCustomer_id(), date.format(loandDate.getTime()), date.format(returnDate.getTime()));
+        int succeed = jdbcTemplate.update("INSERT INTO loans(book_id, customer_id, loan_date, return_date) VALUES(?,?,?,?)", book.getBook_id(), customer.getCustomer_id(), date.format(loanDate.getTime()), date.format(returnDate.getTime()));
 
         jdbcTemplate.update("DELETE FROM book_queue WHERE customer_id = ?", customer.getCustomer_id());
-
         //Provided String Required Customer
-         emailSender.send(customer); //"Hej! Boken är reserverat åt dig: dags att hämta:");
-
-
+            emailSender.send(customer, "Hej "+ customer.getFirst_name() + " " + customer.getLast_name()+ "!"+ " Boken "+ bookDAO.getBookById(book.getBook_id()).getString("title") + " med ISBN "+ bookDAO.getBookById(book.getBook_id()).getString("isbn") +
+                    " är reserverat åt dig. Den reserverades den: "+ loanDate.getTime()  + ". Nu har du möjlighet att hämta ut den. Återlämningsdagen är den "+ returnDate.getTime()+ ", kom förbi så bjuder vi på lite fika också:)");
         return succeed >= 1;
     }
 
 
     public boolean loanBook(String isbn, int customerId, int libraryId){
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("loan_book");
-        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         Map<String, String> inParams = new HashMap<>();
