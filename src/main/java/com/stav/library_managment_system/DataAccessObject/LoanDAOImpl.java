@@ -1,5 +1,5 @@
 package com.stav.library_managment_system.DataAccessObject;
-import com.stav.library_managment_system.DAO.Book_QueueDAO;
+import com.stav.library_managment_system.DAO.BookDAO;
 import com.stav.library_managment_system.DAO.LoanDAO;
 import com.stav.library_managment_system.Email.EmailSender;
 import com.stav.library_managment_system.Models.*;
@@ -24,6 +24,8 @@ public class LoanDAOImpl implements LoanDAO {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private EmailSender emailSender;
+    @Autowired
+    private BookDAO bookDAO;
 
     /**
      *
@@ -70,7 +72,7 @@ public class LoanDAOImpl implements LoanDAO {
 
         Book book = jdbcTemplate.queryForObject("SELECT * FROM `books` WHERE book_id = ?", new BeanPropertyRowMapper<>(Book.class), bookId);
 
-        int someoneInQueue = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM book_queue WHERE isbn = ?", new BeanPropertyRowMapper<>(Integer.class), book.getIsbn());
+        int someoneInQueue = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM book_queue WHERE isbn = ?", Integer.class, book.getIsbn());
 
         if(someoneInQueue == 0){
             return returnBookSucceed >= 1;
@@ -94,8 +96,7 @@ public class LoanDAOImpl implements LoanDAO {
         jdbcTemplate.update("DELETE FROM book_queue WHERE customer_id = ?", customer.getCustomer_id());
 
         //Provided String Required Customer
-         emailSender.send(customer); //"Hej! Boken är reserverat åt dig: dags att hämta:");
-
+         emailSender.send(customer, "Hej! Boken"+ bookDAO.getBookById(book.getBook_id()).getString("title") + "är reserverat åt dig. Den reserverades den: "+ loanDate.getTime()  + "Nu har du möjlighet att hämta ut den. Kom förbi så bjuder Julius på fika:)");
 
         return succeed >= 1;
     }
