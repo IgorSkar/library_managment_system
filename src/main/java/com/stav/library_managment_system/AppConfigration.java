@@ -1,13 +1,8 @@
 package com.stav.library_managment_system;
-import com.stav.library_managment_system.DAO.BookDAO;
-import com.stav.library_managment_system.DAO.Book_QueueDAO;
-import com.stav.library_managment_system.DAO.CustomerDAO;
-import com.stav.library_managment_system.DAO.LoanDAO;
+import com.stav.library_managment_system.DAO.*;
 import com.stav.library_managment_system.Email.EmailSender;
-import com.stav.library_managment_system.Models.Book;
-import com.stav.library_managment_system.Models.Book_Queue;
-import com.stav.library_managment_system.Models.Customer;
-import com.stav.library_managment_system.Models.Loan;
+import com.stav.library_managment_system.Models.*;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,7 +15,7 @@ import java.util.List;
 
 @Configuration
 @EnableScheduling
-public class appConfigration {
+public class AppConfigration {
     @Autowired
     private LoanDAO loanDAO;
     @Autowired
@@ -31,6 +26,8 @@ public class appConfigration {
     private BookDAO bookDAO;
     @Autowired
     private Book_QueueDAO book_queueDAO;
+    @Autowired
+    private BookDetailsDAO bookDetailsDAO;
 
     @Scheduled(fixedRateString = "${email.schedule.time}")
     public void sendSimpleEmail(){
@@ -47,17 +44,17 @@ public class appConfigration {
       List<Loan> loansDueTomorrow = loanDAO.getLoansDueWithinDate(tomorrow);
         System.out.println(loansDueTomorrow.size());
 
-          // hämta alla emails  för  låntagare
+          // hämta alla låntagare
          List<Customer> customers = new ArrayList<>();
          loansDueTomorrow.forEach(loan -> {
-             Customer customer= customerDAO.getById(loan.getCustomer_id());
+             Customer customer = customerDAO.getById(loan.getCustomer_id());
            customers.add(customer);
              System.out.println(customer.getEmail());
-
-         } );
+             System.out.println(loan.getReturn_date());
+         });
 
         // skicka email dessa email
-         customers.forEach(to ->{
+         customers.forEach(to->{
             emailSender.send(to);
              System.out.println("email send successfully!");
 
