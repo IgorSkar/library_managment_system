@@ -1,13 +1,8 @@
 package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.GroupRoomTimesDAO;
-import com.stav.library_managment_system.Models.Customer;
 import com.stav.library_managment_system.Models.CustomersWithGroupRooms;
 import com.stav.library_managment_system.Models.GroupRoomTime;
-import org.json.JSONObject;
-import com.stav.library_managment_system.Models.GroupRoomTime;
-import jdk.security.jarsigner.JarSigner;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
