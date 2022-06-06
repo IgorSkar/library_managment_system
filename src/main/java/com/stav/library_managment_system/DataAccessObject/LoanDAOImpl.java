@@ -70,7 +70,7 @@ public class LoanDAOImpl implements LoanDAO {
 
         Book book = jdbcTemplate.queryForObject("SELECT * FROM `books` WHERE book_id = ?", new BeanPropertyRowMapper<>(Book.class), bookId);
 
-        int someoneInQueue = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM book_queue WHERE isbn = ?", new BeanPropertyRowMapper<>(Integer.class), book.getIsbn());
+        int someoneInQueue = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM book_queue WHERE isbn = ?", Integer.class, book.getIsbn());
 
         if(someoneInQueue == 0){
             return returnBookSucceed >= 1;
@@ -80,7 +80,6 @@ public class LoanDAOImpl implements LoanDAO {
 
         if(queue == null){
             return returnBookSucceed >= 1;
-
         }
 
         Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id = ?", new BeanPropertyRowMapper<>(Customer.class), queue.getCustomer_id());
