@@ -39,8 +39,28 @@ public class GroupRoomTimesDAOIMPL implements GroupRoomTimesDAO {
         return (ArrayList<GroupRoomTime>) m.get("return");
     }
 
+    public List<JSONObject> getBookedTimes(int roomId){
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("get_booked_group_room_times")
+                .returningResultSet("return", (rs, rn) -> {
+                    JSONObject o = new JSONObject();
+                    o.put("time_id", rs.getInt("time_id"));
+                    o.put("room_id", rs.getInt("room_id"));
+                    o.put("time", rs.getString("time"));
+                    o.put("date", rs.getString("date"));
+                    o.put("customer_id", rs.getInt("customer_id"));
+                    o.put("email", rs.getString("email"));
+                    return o;
+                });
+        Map<String, String> inParams = new HashMap<>();
+        inParams.put("room_id", roomId+"");
+        SqlParameterSource in = new MapSqlParameterSource(inParams);
+        Map m = jdbcCall.execute(in);
+        return (ArrayList<JSONObject>) m.get("return");
+    }
+
     public List<CustomersWithGroupRooms> allRoomBookings(){
-        List<CustomersWithGroupRooms> data = jdbcTemplate.query("SELECT * FROM library_management_system.customers_with_group_rooms;", new BeanPropertyRowMapper<CustomersWithGroupRooms>(CustomersWithGroupRooms.class));
+        List<CustomersWithGroupRooms> data = jdbcTemplate.query("SELECT * FROM customers_with_group_rooms", new BeanPropertyRowMapper<>(CustomersWithGroupRooms.class));
         System.out.println("Full list in backend NOW: " + data);
         return data;
     }

@@ -26,6 +26,11 @@ public class GroupRoomTimesController {
         return groupRoomTimesDAO.getAvailableTimesById(roomId);
     }
 
+    @GetMapping("booked_times/{id}")
+    public String getBookedTimes(@PathVariable("id") int roomId){
+        return groupRoomTimesDAO.getBookedTimes(roomId).toString();
+    }
+
     @GetMapping("allRoomBookings")
     public List<CustomersWithGroupRooms> allRoomBookings(){
         return groupRoomTimesDAO.allRoomBookings();
