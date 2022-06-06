@@ -1,6 +1,7 @@
 package com.stav.library_managment_system.Email;
 
 
+import com.stav.library_managment_system.DAO.LoanDAO;
 import com.stav.library_managment_system.Models.Customer;
 import com.stav.library_managment_system.AppConfigration;
 import com.stav.library_managment_system.Models.Loan;
@@ -24,6 +25,8 @@ public class EmailService implements EmailSender{
 
     @Autowired
     private Loan loan;
+    @Autowired
+    private LoanDAO loanDAO;
 
     private final static Logger LOGGER = LoggerFactory
             .getLogger(EmailService.class);
@@ -33,14 +36,11 @@ public class EmailService implements EmailSender{
     @Override
     @Async
     public void send(Customer customer) {
-        List<String> loans = new ArrayList<>();
-        String date = loan.getReturn_date();
-        loans.add(date);
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper =
                     new MimeMessageHelper(mimeMessage, "utf-8");
-            helper.setText("Hej " + customer.getFirst_name() + "! Hoppas allt är bra med dig," + date +
+            helper.setText("Hej " + customer.getFirst_name() + "! Hoppas allt är bra med dig," + loanDAO.getLoansByCustomerId(loan.getCustomer_id()) +
                     "vi på Stav Biblioteket ville meddela dig om att din låneperiod för " +
                     "börjar gå mot sitt slut. Lämna gärna tillbaka boken senast ",true);
             helper.setTo(customer.getEmail());

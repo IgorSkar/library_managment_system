@@ -22,12 +22,6 @@ public class AppConfigration {
     private CustomerDAO customerDAO;
     @Autowired
     private EmailSender emailSender;
-    @Autowired
-    private BookDAO bookDAO;
-    @Autowired
-    private Book_QueueDAO book_queueDAO;
-    @Autowired
-    private BookDetailsDAO bookDetailsDAO;
 
     @Scheduled(fixedRateString = "${email.schedule.time}")
     public void sendSimpleEmail(){
