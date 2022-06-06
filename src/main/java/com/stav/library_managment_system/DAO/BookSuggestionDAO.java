@@ -10,8 +10,8 @@ public interface BookSuggestionDAO {
 
     //BookSuggestion getBookSuggestionByCustomerId(int customerId);
 
-    int add(BookSuggestion bookSuggestion);
+    boolean add(String title, String authors, String isbn, String language);
 
-    void deleteById(int book_suggestion_id);
+    boolean deleteById(int book_suggestion_id);
 
 }
