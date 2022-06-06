@@ -14,9 +14,13 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
+
+import java.awt.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
+
 @Repository
 public class LoanDAOImpl implements LoanDAO {
 
@@ -66,6 +70,7 @@ public class LoanDAOImpl implements LoanDAO {
 
 
     public boolean returnBook(int bookId){
+
         String query = "DELETE FROM loans WHERE book_id=?";
 
         int returnBookSucceed = jdbcTemplate.update(query, bookId);
@@ -93,10 +98,9 @@ public class LoanDAOImpl implements LoanDAO {
         int succeed = jdbcTemplate.update("INSERT INTO loans(book_id, customer_id, loan_date, return_date) VALUES(?,?,?,?)", book.getBook_id(), customer.getCustomer_id(), date.format(loanDate.getTime()), date.format(returnDate.getTime()));
 
         jdbcTemplate.update("DELETE FROM book_queue WHERE customer_id = ?", customer.getCustomer_id());
-
         //Provided String Required Customer
-         emailSender.send(customer, "Hej! Boken"+ bookDAO.getBookById(book.getBook_id()).getString("title") + "är reserverat åt dig. Den reserverades den: "+ loanDate.getTime()  + "Nu har du möjlighet att hämta ut den. Kom förbi så bjuder Julius på fika:)");
-
+            emailSender.send(customer, "Hej "+ customer.getFirst_name() + " " + customer.getLast_name()+ "!"+ " Boken "+ bookDAO.getBookById(book.getBook_id()).getString("title") + " med ISBN "+ bookDAO.getBookById(book.getBook_id()).getString("isbn") +
+                    " är reserverat åt dig. Den reserverades den: "+ loanDate.getTime()  + ". Nu har du möjlighet att hämta ut den. Återlämningsdagen är den "+ returnDate.getTime()+ ", kom förbi så bjuder vi på lite fika också:)");
         return succeed >= 1;
     }
 

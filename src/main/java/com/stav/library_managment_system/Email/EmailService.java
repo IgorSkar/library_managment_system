@@ -41,7 +41,7 @@ public class EmailService implements EmailSender{
                     new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(text,true);
             helper.setTo(customer.getEmail());
-            helper.setSubject("Loan period is over!");
+            helper.setSubject("Stav Bibliotek");
             helper.setFrom("librarystav.22@gmail.com");
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {

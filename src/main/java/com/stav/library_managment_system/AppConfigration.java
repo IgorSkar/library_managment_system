@@ -44,10 +44,10 @@ public class AppConfigration {
          loansDueTomorrow.forEach(loan -> {
              Customer customer = customerDAO.getById(loan.getCustomer_id());
            customers.add(customer);
-           toSend.put(customer, "Hej " + customer.getFirst_name() + "! Hoppas allt är bra med dig," +
-                   "vi på Stav Biblioteket ville meddela dig om att din låneperiod för " + bookDAO.getBookById(loan.getBook_id()).getString("title") + //bokens titel och kanske isbn
-                   " börjar gå mot sitt slut. Lämna gärna tillbaka boken snarast, din låneperiod slutar den " + loan.getReturn_date() + //return_date
-                   ". Vi är tacksamma att ni valde att låna böcker hos oss på Stav Bibliotek");
+           toSend.put(customer, "Hej " + customer.getFirst_name() + " " + customer.getLast_name() + "! Hoppas allt är bra med dig. " +
+                   "Vi på Stav Biblioteket tar hand om våra låntagare och vill därför skicka en påminnelse till dig att snart är din låneperiod för " + bookDAO.getBookById(loan.getBook_id()).getString("title") + " med ISBN "+ bookDAO.getBookById(loan.getBook_id()).getString("isbn") + //bokens titel och kanske isbn
+                   " som du lånaden den "+ loan.getLoan_date() + " börjar gå mot sitt slut. Lämna gärna tillbaka boken snarast, din låneperiod slutar den " + loan.getReturn_date() + //return_date
+                   ". Vi är tacksamma att ni valde att låna böcker hos oss på Stav Bibliotek. Ni är alltid välkommna tillbaka!");
              System.out.println(customer.getEmail());
              System.out.println(loan.getReturn_date());
          });
