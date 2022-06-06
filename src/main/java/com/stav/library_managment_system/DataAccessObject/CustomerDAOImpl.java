@@ -46,14 +46,20 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
 
-    public boolean isValidCustomer( String email, String password){
+    public Customer isValidCustomer( String email, String password){
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("authenticator");
         Map<String, String> inParams = new HashMap<>();
         inParams.put("username", email);
         inParams.put("userpassword", password);
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
-        return (int) jdbcCall.execute(in).get("succeed") >= 1;
+        Map m = jdbcCall.execute(in);
+        if((int) m.get("succeed") == 0){
+            return null;
+        }
+
+        String query = "SELECT * FROM customers WHERE email = ?";
+        return jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Customer.class), email);
     }
 
 

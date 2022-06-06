@@ -1,6 +1,7 @@
 package com.stav.library_managment_system.DataAccessObject;
 
 import com.stav.library_managment_system.DAO.EmployeeDAO;
+import com.stav.library_managment_system.Models.Customer;
 import com.stav.library_managment_system.Models.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -46,15 +47,20 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 
 
-    public boolean isValidEmployee (String email, String password){
+    public Employee isValidEmployee (String email, String password){
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("employee_authenticator");
         Map<String, String> inParams = new HashMap<>();
         inParams.put("username", email);
         inParams.put("userpassword", password);
 
         SqlParameterSource in = new MapSqlParameterSource(inParams);
-        Map map = jdbcCall.execute(in);
-        return (int) map.get("succeed") >= 1;
+        Map m = jdbcCall.execute(in);
+        if((int) m.get("succeed") == 0){
+            return null;
+        }
+
+        String query = "SELECT * FROM employees WHERE email = ?";
+        return jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Employee.class), email);
     }
 
     @Override

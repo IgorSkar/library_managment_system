@@ -58,7 +58,7 @@ public class LoanDAOImpl implements LoanDAO {
 
     @Override
     public Loan getById(int customerId, int bookId) throws DataAccessException {
-        Loan loan=  jdbcTemplate.queryForObject("SELECT * FROM loans WHERE customer_id=? AND book_id=?", new BeanPropertyRowMapper<Loan>(Loan.class),new Object[]{customerId,bookId});
+        Loan loan=  jdbcTemplate.queryForObject("SELECT * FROM loans WHERE customer_id=? AND book_id=?", new BeanPropertyRowMapper<>(Loan.class),new Object[]{customerId,bookId});
         return loan;
     }
 
@@ -66,12 +66,17 @@ public class LoanDAOImpl implements LoanDAO {
     public boolean returnBook(int bookId){
         String query = "DELETE FROM loans WHERE book_id=?";
 
-        Book book = jdbcTemplate.queryForObject("SELECT * FROM `books` WHERE book_id = ?", new BeanPropertyRowMapper<>(Book.class), bookId);
-        System.out.println("Tjenare " + book.getIsbn());
-
-        Book_Queue queue = jdbcTemplate.queryForObject("SELECT  * FROM book_queue WHERE isbn = ? ORDER BY queue_date ASC LIMIT 1", new BeanPropertyRowMapper<>(Book_Queue.class), book.getIsbn());
-
         int returnBookSucceed = jdbcTemplate.update(query, bookId);
+
+        Book book = jdbcTemplate.queryForObject("SELECT * FROM `books` WHERE book_id = ?", new BeanPropertyRowMapper<>(Book.class), bookId);
+
+        int someoneInQueue = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM book_queue WHERE isbn = ?", new BeanPropertyRowMapper<>(Integer.class), book.getIsbn());
+
+        if(someoneInQueue == 0){
+            return returnBookSucceed >= 1;
+        }
+
+        Book_Queue queue = jdbcTemplate.queryForObject("SELECT * FROM book_queue WHERE isbn = ? ORDER BY queue_date ASC LIMIT 1", new BeanPropertyRowMapper<>(Book_Queue.class), book.getIsbn());
 
         if(queue == null){
             return returnBookSucceed >= 1;
@@ -80,11 +85,11 @@ public class LoanDAOImpl implements LoanDAO {
 
         Customer customer = jdbcTemplate.queryForObject("SELECT * FROM customers WHERE customer_id = ?", new BeanPropertyRowMapper<>(Customer.class), queue.getCustomer_id());
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar loandDate = Calendar.getInstance();
-        loandDate.setTime(new Date());
-        Calendar returnDate = (Calendar) loandDate.clone();
+        Calendar loanDate = Calendar.getInstance();
+        loanDate.setTime(new Date());
+        Calendar returnDate = (Calendar) loanDate.clone();
         returnDate.add(Calendar.MONTH, 1);
-        int succeed = jdbcTemplate.update("INSERT INTO loans(book_id, customer_id, loan_date, return_date) VALUES(?,?,?,?)", book.getBook_id(), customer.getCustomer_id(), date.format(loandDate.getTime()), date.format(returnDate.getTime()));
+        int succeed = jdbcTemplate.update("INSERT INTO loans(book_id, customer_id, loan_date, return_date) VALUES(?,?,?,?)", book.getBook_id(), customer.getCustomer_id(), date.format(loanDate.getTime()), date.format(returnDate.getTime()));
 
         jdbcTemplate.update("DELETE FROM book_queue WHERE customer_id = ?", customer.getCustomer_id());
 
@@ -98,7 +103,7 @@ public class LoanDAOImpl implements LoanDAO {
 
     public boolean loanBook(String isbn, int customerId, int libraryId){
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("loan_book");
-        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         Map<String, String> inParams = new HashMap<>();

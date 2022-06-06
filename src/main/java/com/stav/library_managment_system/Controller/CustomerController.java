@@ -43,8 +43,8 @@ public class CustomerController {
     }
 
     @GetMapping("/create")
-    public boolean createCustomer(@RequestParam String first_name, @RequestParam String last_name, @RequestParam String email, @RequestParam String password){
-        return customerDAO.createCustomer(first_name, last_name, email, password);
+    public boolean createCustomer(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String mail, @RequestParam String password){
+        return customerDAO.createCustomer(firstName, lastName, mail, password);
     }
 
     @PutMapping("/{customerId}")
@@ -63,7 +63,7 @@ public class CustomerController {
 
 
     @GetMapping("/login")
-    public boolean isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
+    public Customer isValidCustomer(@RequestParam("email") String email,@RequestParam("password") String password){
         return customerDAO.isValidCustomer(email, password);
     }
 
