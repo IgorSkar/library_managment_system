@@ -96,8 +96,6 @@ public class BookingRoomDAOImpl implements  BookingRoomDAO {
                 });
         Map m = jdbcCall.execute(new HashMap<String, Object>(0));
 
-        System.out.println(m);
-
         return (List<BookingRoom>) m.get("return");
     }
 

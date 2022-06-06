@@ -89,7 +89,6 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
 
     public List<JSONObject> getBooksByGenre(String[] genres){
         for (String genre : genres) {
-            System.out.println(genre);
         }
         List<JSONObject> books = getBooks().stream().filter(o -> Arrays.stream((String[]) o.get("genres")).anyMatch(s -> Arrays.stream(genres).anyMatch(g -> s.equalsIgnoreCase(g)))).collect(Collectors.toList());
         return books;
@@ -122,7 +121,6 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
         inParams.put("isbn", isbn);
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map m = simpleJdbcCall.execute(in);
-        System.out.println(((ArrayList<JSONObject>) m.get("return")).get(0));
         return ((ArrayList<JSONObject>) m.get("return")).get(0);
     }
 

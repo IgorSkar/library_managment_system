@@ -61,7 +61,6 @@ public class GroupRoomTimesDAOIMPL implements GroupRoomTimesDAO {
 
     public List<CustomersWithGroupRooms> allRoomBookings(){
         List<CustomersWithGroupRooms> data = jdbcTemplate.query("SELECT * FROM customers_with_group_rooms", new BeanPropertyRowMapper<>(CustomersWithGroupRooms.class));
-        System.out.println("Full list in backend NOW: " + data);
         return data;
     }
 

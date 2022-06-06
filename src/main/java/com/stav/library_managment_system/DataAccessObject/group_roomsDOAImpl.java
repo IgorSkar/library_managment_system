@@ -19,7 +19,6 @@ public class group_roomsDOAImpl implements group_roomsDAO {
     @Override
     public List<group_rooms> getAllGroupRooms() {
         List<group_rooms> l = jdbcTemplate.query("SELECT * FROM group_rooms",new BeanPropertyRowMapper<group_rooms>(group_rooms.class));
-        System.out.println("What is sent to frontend: " + l); // FOR SOME REASON THIS DOES NOT GIVE ME ALL 4 COLUMNS, JUST 3!?!?!?!?!?
         return l;
     }
 

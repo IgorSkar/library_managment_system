@@ -32,7 +32,6 @@ public class Book_QueueController {
     @GetMapping("/customers/{customerId}")
     public ResponseEntity<?> getBook_QueueByCustomerId(@PathVariable int customerId){
           Book_Queue book_queue = null;
-        System.out.println("customer with id" + customerId);
           try {
             book_queue =  book_queueDAO.getBook_QueueById(customerId);
           }catch (DataAccessException e){
@@ -71,7 +70,6 @@ public class Book_QueueController {
 
       @GetMapping("/leave_queue")
       public  ResponseEntity<?> deleteBook_QueueByCustomerId(@RequestParam String isbn, @RequestParam int customerId){
-          System.out.println(customerId);
          book_queueDAO.deleteBook_QueueByCustomerId(isbn, customerId);
          return  new ResponseEntity<String>("Reservation deleted successfully!", HttpStatus.OK);
       }

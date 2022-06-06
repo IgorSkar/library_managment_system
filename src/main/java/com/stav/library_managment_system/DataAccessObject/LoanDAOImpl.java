@@ -173,7 +173,6 @@ public class LoanDAOImpl implements LoanDAO {
          String loanDate = dateFormat.format(date);
         jdbcTemplate.update("INSERT INTO loans (book_id,customer_id,loan_date,return_date) VALUES (?,?,?,?)",new Object[]{book.getBook_id(),customerId,loanDate,loanDate});
           String result = "book" + bookDetails.toString() + "loans to " + customerId + "on loan " + loanDate;
-        System.out.println(result);
         return result;
     }
     @Override

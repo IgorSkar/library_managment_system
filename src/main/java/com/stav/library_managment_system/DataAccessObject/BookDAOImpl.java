@@ -65,7 +65,6 @@ public class BookDAOImpl implements BookDAO {
 
     @Override
     public int save(String ISBN, int libraryId) {
-        System.out.println(ISBN);
         return jdbcTemplate.update("INSERT INTO books (isbn, library_id) VALUES (?,?)", ISBN, libraryId);
     }
 

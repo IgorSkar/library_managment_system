@@ -24,7 +24,6 @@ public class AppConfigration {
 
     @Scheduled(fixedRateString = "${email.schedule.time}")
     public void sendSimpleEmail(){
-      // System.out.println(" Send email to User ");
     //   kolla dagens datum och imorgons datum.
       Date dt = new Date();
       Calendar c = Calendar.getInstance();
@@ -35,7 +34,6 @@ public class AppConfigration {
       String tomorrow =  sdf.format(dt);
       // hämta alla loan som ska lämnas imorgon
       List<Loan> loansDueTomorrow = loanDAO.getLoansDueWithinDate(tomorrow);
-        System.out.println(loansDueTomorrow.size());
 
         HashMap<Customer, String> toSend = new HashMap<>();
 
@@ -48,8 +46,6 @@ public class AppConfigration {
                    "Vi på Stav Biblioteket tar hand om våra låntagare och vill därför skicka en påminnelse till dig att snart är din låneperiod för " + bookDAO.getBookById(loan.getBook_id()).getString("title") + " med ISBN "+ bookDAO.getBookById(loan.getBook_id()).getString("isbn") + //bokens titel och kanske isbn
                    " som du lånaden den "+ loan.getLoan_date() + " börjar gå mot sitt slut. Lämna gärna tillbaka boken snarast, din låneperiod slutar den " + loan.getReturn_date() + //return_date
                    ". Vi är tacksamma att ni valde att låna böcker hos oss på Stav Bibliotek. Ni är alltid välkommna tillbaka!");
-             System.out.println(customer.getEmail());
-             System.out.println(loan.getReturn_date());
          });
 
         // skicka email dessa email

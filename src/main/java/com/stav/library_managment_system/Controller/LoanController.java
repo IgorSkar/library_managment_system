@@ -40,8 +40,6 @@ public class LoanController {
     @GetMapping("/{customerId}/{bookId}")
     public  ResponseEntity<?> getLoanByCustomerId(@PathVariable int customerId,@PathVariable int bookId){
          Loan loan = null;
-        System.out.println("customer with id" + customerId);
-        System.out.println("book with id" + bookId);
          try {
               loan = loanDAO.getById(customerId,bookId);
          } catch (DataAccessException e){
