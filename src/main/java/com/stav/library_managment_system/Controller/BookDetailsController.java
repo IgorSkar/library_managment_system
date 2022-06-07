@@ -29,7 +29,8 @@ public class BookDetailsController {
 
     @GetMapping("/{isbn}")
     public String getBookDetailsByISBN(@PathVariable("isbn") String isbn) {
-        return bookDetailsDAO.findByISBN(isbn).toString();
+        JSONObject object = bookDetailsDAO.findByISBN(isbn);
+        return object == null ? "" : object.toString();
     }
 
     @PostMapping()

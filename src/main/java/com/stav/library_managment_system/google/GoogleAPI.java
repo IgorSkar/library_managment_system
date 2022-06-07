@@ -94,43 +94,7 @@ public class GoogleAPI {
             }catch (Exception e){ }
             return book;
         }catch (Exception e){
-            return getBookByIsbn(isbn);
+            return null;
         }
     }
-
-    private JSONObject getBookByIsbn(String isbn){
-        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
-                .withProcedureName("get_book_by_isbn")
-                .returningResultSet("return", (rs, rn) -> {
-                    JSONObject o = new JSONObject();
-                    o.put("title", rs.getString("title"));
-                    o.put("description", rs.getString("description"));
-                    JSONArray authorsArray = new JSONArray();
-                    if(rs.getString("authors") != null) {
-                        authorsArray.put(rs.getString("authors").split(","));
-                    }
-                    o.put("authors", authorsArray);
-                    JSONArray genresArray = new JSONArray();
-                    if(rs.getString("genres") != null) {
-                        authorsArray.put(rs.getString("genres").split(","));
-                    }
-                    o.put("genres", genresArray);
-                    o.put("isbn", rs.getString("isbn"));
-                    o.put("published", rs.getString("published"));
-                    o.put("pages", rs.getInt("pages"));
-                    o.put("language", rs.getString("language"));
-                    o.put("image_source", rs.getString("image_source"));
-                    return o;
-                });
-        Map<String, String> inParams = new HashMap<>();
-        inParams.put("isbn", isbn);
-
-        SqlParameterSource in = new MapSqlParameterSource(inParams);
-        Map m = jdbcCall.execute(in);
-        if(((ArrayList<JSONObject>) m.get("return")).isEmpty()){
-            return new JSONObject();
-        }
-        return ((ArrayList<JSONObject>) m.get("return")).get(0);
-    }
-
 }

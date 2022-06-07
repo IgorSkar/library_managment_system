@@ -121,7 +121,11 @@ public class BookDetailsDAOIMPL implements BookDetailsDAO {
         inParams.put("isbn", isbn);
         SqlParameterSource in = new MapSqlParameterSource(inParams);
         Map m = simpleJdbcCall.execute(in);
-        return ((ArrayList<JSONObject>) m.get("return")).get(0);
+        try {
+            return ((ArrayList<JSONObject>) m.get("return")).get(0);
+        }catch(Exception e){
+            return null;
+        }
     }
 
 
